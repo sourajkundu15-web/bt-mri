@@ -38,8 +38,8 @@ function ChartCard({
 }
 
 const tooltipStyle = {
-  background: "oklch(0.17 0.025 190 / 0.95)",
-  border: "1px solid oklch(0.4 0.05 180 / 0.4)",
+  background: "rgba(44, 52, 96, 0.95)",
+  border: "1px solid rgba(100, 112, 180, 0.5)",
   borderRadius: "8px",
   fontSize: "12px",
 };
@@ -79,7 +79,7 @@ export function Training() {
           <div className="lg:col-span-1 section-reveal">
             <div className="rounded-xl glass p-5">
               <div className="flex items-center gap-2 mb-4">
-                <Cog className="w-4 h-4 text-teal" />
+                <Cog className="w-4 h-4 text-coral" />
                 <h3 className="font-semibold text-sm">Configuration</h3>
               </div>
               <dl className="space-y-2.5">
@@ -94,13 +94,13 @@ export function Training() {
 
             <div className="mt-4 rounded-xl glass p-5">
               <div className="flex items-center gap-2 mb-4">
-                <Download className="w-4 h-4 text-cyan" />
+                <Download className="w-4 h-4 text-amber" />
                 <h3 className="font-semibold text-sm">Callbacks</h3>
               </div>
               <div className="space-y-3">
                 {callbacks.map((c) => (
                   <div key={c.name} className="text-sm">
-                    <div className="font-mono text-teal">{c.name}</div>
+                    <div className="font-mono text-coral">{c.name}</div>
                     <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
                       {c.desc}
                     </p>
@@ -113,11 +113,11 @@ export function Training() {
           {/* Code */}
           <div className="lg:col-span-2 section-reveal">
             <div className="rounded-xl overflow-hidden glass-strong h-full">
-              <div className="flex items-center gap-2 px-4 py-2.5 border-b border-teal/15 bg-teal/5">
+              <div className="flex items-center gap-2 px-4 py-2.5 border-b border-coral/15 bg-coral/5">
                 <div className="flex gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-destructive/60" />
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-400/60" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald/60" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber/60" />
                 </div>
                 <span className="font-mono text-xs text-muted-foreground ml-2">train.py</span>
               </div>
@@ -148,11 +148,11 @@ export function Training() {
         {/* Charts */}
         <div className="mt-8">
           <div className="flex items-center gap-3 mb-6">
-            <Gauge className="w-4 h-4 text-teal" />
+            <Gauge className="w-4 h-4 text-coral" />
             <span className="font-mono text-xs tracking-widest text-muted-foreground">
               TRAINING CURVES · 100 EPOCHS
             </span>
-            <span className="h-px flex-1 bg-teal/20" />
+            <span className="h-px flex-1 bg-coral/20" />
           </div>
 
           <div className="grid md:grid-cols-2 gap-5">
@@ -162,15 +162,15 @@ export function Training() {
             >
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={accData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.3 0.03 180 / 0.3)" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(100, 112, 180, 0.35)" />
                   <XAxis
                     dataKey="epoch"
-                    stroke="oklch(0.6 0.02 190)"
+                    stroke="#a0a6c4"
                     fontSize={11}
                     tickLine={false}
                   />
                   <YAxis
-                    stroke="oklch(0.6 0.02 190)"
+                    stroke="#a0a6c4"
                     fontSize={11}
                     domain={[50, 100]}
                     tickLine={false}
@@ -180,14 +180,14 @@ export function Training() {
                   <Line
                     type="monotone"
                     dataKey="Train"
-                    stroke="#3be587"
+                    stroke="#89ddff"
                     strokeWidth={2}
                     dot={false}
                   />
                   <Line
                     type="monotone"
                     dataKey="Validation"
-                    stroke="#2ee6c4"
+                    stroke="#ff6b6b"
                     strokeWidth={2}
                     dot={false}
                   />
@@ -201,15 +201,15 @@ export function Training() {
             >
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={lossData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.3 0.03 180 / 0.3)" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(100, 112, 180, 0.35)" />
                   <XAxis
                     dataKey="epoch"
-                    stroke="oklch(0.6 0.02 190)"
+                    stroke="#a0a6c4"
                     fontSize={11}
                     tickLine={false}
                   />
                   <YAxis
-                    stroke="oklch(0.6 0.02 190)"
+                    stroke="#a0a6c4"
                     fontSize={11}
                     tickLine={false}
                   />
@@ -218,14 +218,14 @@ export function Training() {
                   <Line
                     type="monotone"
                     dataKey="Train"
-                    stroke="#3be587"
+                    stroke="#89ddff"
                     strokeWidth={2}
                     dot={false}
                   />
                   <Line
                     type="monotone"
                     dataKey="Validation"
-                    stroke="#2ee6c4"
+                    stroke="#ff6b6b"
                     strokeWidth={2}
                     dot={false}
                   />
@@ -241,23 +241,23 @@ export function Training() {
                 <AreaChart data={aucData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="gAuc" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#2ee6c4" stopOpacity={0.5} />
-                      <stop offset="95%" stopColor="#2ee6c4" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#ff6b6b" stopOpacity={0.5} />
+                      <stop offset="95%" stopColor="#ff6b6b" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="gPrec" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3be587" stopOpacity={0.4} />
-                      <stop offset="95%" stopColor="#3be587" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#ffcb6b" stopOpacity={0.4} />
+                      <stop offset="95%" stopColor="#ffcb6b" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.3 0.03 180 / 0.3)" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(100, 112, 180, 0.35)" />
                   <XAxis
                     dataKey="epoch"
-                    stroke="oklch(0.6 0.02 190)"
+                    stroke="#a0a6c4"
                     fontSize={11}
                     tickLine={false}
                   />
                   <YAxis
-                    stroke="oklch(0.6 0.02 190)"
+                    stroke="#a0a6c4"
                     fontSize={11}
                     domain={[80, 100]}
                     tickLine={false}
@@ -267,21 +267,21 @@ export function Training() {
                   <Area
                     type="monotone"
                     dataKey="Precision"
-                    stroke="#3be587"
+                    stroke="#ffcb6b"
                     strokeWidth={2}
                     fill="url(#gPrec)"
                   />
                   <Area
                     type="monotone"
                     dataKey="Recall"
-                    stroke="#19d3c5"
+                    stroke="#89ddff"
                     strokeWidth={2}
                     fill="none"
                   />
                   <Area
                     type="monotone"
                     dataKey="Train"
-                    stroke="#2ee6c4"
+                    stroke="#ff6b6b"
                     strokeWidth={2}
                     fill="url(#gAuc)"
                   />
@@ -297,19 +297,19 @@ export function Training() {
                 <AreaChart data={aucData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="gAucFull" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#2ee6c4" stopOpacity={0.6} />
-                      <stop offset="95%" stopColor="#2ee6c4" stopOpacity={0.05} />
+                      <stop offset="5%" stopColor="#ff6b6b" stopOpacity={0.6} />
+                      <stop offset="95%" stopColor="#ff6b6b" stopOpacity={0.05} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.3 0.03 180 / 0.3)" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(100, 112, 180, 0.35)" />
                   <XAxis
                     dataKey="epoch"
-                    stroke="oklch(0.6 0.02 190)"
+                    stroke="#a0a6c4"
                     fontSize={11}
                     tickLine={false}
                   />
                   <YAxis
-                    stroke="oklch(0.6 0.02 190)"
+                    stroke="#a0a6c4"
                     fontSize={11}
                     domain={[80, 100]}
                     tickLine={false}
@@ -318,7 +318,7 @@ export function Training() {
                   <Area
                     type="monotone"
                     dataKey="Train"
-                    stroke="#2ee6c4"
+                    stroke="#ff6b6b"
                     strokeWidth={2.5}
                     fill="url(#gAucFull)"
                     name="Val AUC"
@@ -332,10 +332,10 @@ export function Training() {
         {/* Quick stats strip */}
         <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 section-reveal">
           {[
-            { label: "Final val accuracy", value: 94.75, suffix: "%", color: "#2ee6c4" },
-            { label: "Final val AUC", value: 99.11, suffix: "%", color: "#19d3c5" },
-            { label: "Val precision", value: 94.81, suffix: "%", color: "#3be587" },
-            { label: "Val recall", value: 94.69, suffix: "%", color: "#3be587" },
+            { label: "Final val accuracy", value: 94.75, suffix: "%", color: "#ff6b6b" },
+            { label: "Final val AUC", value: 99.11, suffix: "%", color: "#ffcb6b" },
+            { label: "Val precision", value: 94.81, suffix: "%", color: "#89ddff" },
+            { label: "Val recall", value: 94.69, suffix: "%", color: "#c792ea" },
           ].map((s) => (
             <div key={s.label} className="rounded-lg glass p-4 text-center">
               <div className="text-2xl font-bold tabular-nums" style={{ color: s.color }}>

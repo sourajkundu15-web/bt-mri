@@ -38,3 +38,40 @@ Stage Summary:
 - All 8 user-visible sections verified via Agent Browser + VLM screenshot analysis (desktop + mobile)
 - Content faithfully extracted from all 3 uploaded source files
 - Tech: Next.js 16, TypeScript, Tailwind CSS 4, Three.js/R3F, Framer Motion, Recharts, shadcn/ui, Lucide icons
+
+---
+Task ID: 2
+Agent: main (Z.ai Code)
+Task: Change background to #080a4a, replace hero 3D with a neural network model, and add a 3D futuristic brain model in the site.
+
+Work Log:
+- Analyzed user's reference image with VLM (it was the current dataset section — confirming the navy aesthetic direction)
+- Updated globals.css :root palette: background #080a4a (deep indigo), card #131877, secondary #1c2190, border #2a30a0, foreground #e3e7f5; kept coral/amber/cyan/purple accents
+- Updated body vignette + glass/grid/scrollbar utilities to match the deeper indigo (rgba 74,86,200 / 120,132,230 tones)
+- Built new 3D component `src/components/three/neural-network.tsx`:
+  - 5-layer feed-forward network (8→12→10→8→4 nodes) arranged left-to-right
+  - Each node = pulsing emissive sphere (coral input → amber hidden → cyan/purple output)
+  - Faint connection lines between consecutive layers
+  - 22 animated signal-pulse spheres traveling along random connections (signal flow)
+  - Gentle auto-rotation + Float; transparent canvas
+- Built new 3D component `src/components/three/futuristic-brain.tsx`:
+  - Two-lobe brain built from a distorted, wrinkled IcosahedronGeometry (central fissure, sin-noise wrinkles)
+  - Translucent inner shell (emissive indigo, 32% opacity) + cyan wireframe overlay
+  - 90 glowing surface nodes (coral/amber/cyan/purple) distributed across both lobes, pulsing
+  - 14 animated synapse arcs — glowing spheres travel along quadratic bezier curves between random node pairs (firing synapses)
+  - Rotating orbit ring; Float + auto-rotation; 3 colored point lights
+- Swapped hero (`hero.tsx`) to render `<NeuralNetwork />` instead of the old particle brain
+- Created new `src/components/sections/neural-vision.tsx` section showcasing `<FuturisticBrain />` with headline "A futuristic brain, built from a neural lattice", descriptive copy, and 3 feature cards (Layered cognition / Frozen backbone / Synaptic firing)
+- Added `<NeuralVision />` to page.tsx right after `<Hero />` (kept in the top region of the site)
+- Verified with Agent Browser + VLM:
+  - Background computed = rgb(8,10,74) = #080a4a ✓
+  - Hero neural network: layered nodes glowing coral/amber/cyan with signal pulses ✓
+  - Futuristic brain section: wireframe+translucent shell brain with glowing surface nodes + firing synapses ✓
+  - No console errors, no page errors; lint clean
+
+Stage Summary:
+- Background is now #080a4a (deep indigo) as requested
+- Hero displays a 3D neural network (layered nodes + connections + animated signals) replacing the old particle brain
+- New "Neural Vision" section (top of page, right after hero) displays a 3D futuristic brain (wireframe shell + glowing neurons + firing synapses)
+- Both 3D models use the coral/amber/cyan/purple palette on the indigo base
+- Lint: clean; dev server: 200 responses, no errors

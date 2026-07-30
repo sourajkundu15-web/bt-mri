@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowDown, Activity, Scan } from "lucide-react";
 import { CountUp } from "./primitives";
 
-const NeuralBrain = dynamic(() => import("@/components/three/neural-brain"), {
+const NeuralNetwork = dynamic(() => import("@/components/three/neural-network"), {
   ssr: false,
 });
 
@@ -19,9 +19,9 @@ export function Hero() {
       <div className="absolute inset-0 grid-bg opacity-60" />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
 
-      {/* 3D brain — right side on desktop, behind text on mobile */}
+      {/* 3D neural network — right side on desktop, behind text on mobile */}
       <div className="absolute inset-0 lg:right-0 lg:left-1/2">
-        <NeuralBrain />
+        <NeuralNetwork />
       </div>
       <div className="absolute inset-0 lg:bg-gradient-to-r lg:from-background lg:via-background/70 lg:to-transparent" />
 
@@ -34,10 +34,10 @@ export function Hero() {
             className="inline-flex items-center gap-2 rounded-full glass px-3 py-1.5 text-xs font-mono mb-6"
           >
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-teal opacity-75 animate-ping" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-teal" />
+              <span className="absolute inline-flex h-full w-full rounded-full bg-coral opacity-75 animate-ping" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-coral" />
             </span>
-            <span className="text-teal tracking-widest">CLINICAL ML · 4-CLASS CNN</span>
+            <span className="text-coral tracking-widest">CLINICAL ML · 4-CLASS CNN</span>
           </motion.div>
 
           <motion.h1
@@ -48,7 +48,7 @@ export function Hero() {
           >
             Brain Tumor
             <br />
-            <span className="text-gradient-teal glow-text">Classification</span>
+            <span className="text-gradient-coral">Classification</span>
             <br />
             <span className="text-2xl sm:text-3xl md:text-4xl text-muted-foreground font-semibold">
               from MRI Scans
@@ -74,16 +74,16 @@ export function Hero() {
             className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4"
           >
             {[
-              { label: "Validation Acc", value: 94.75, suffix: "%", decimals: 2, icon: Activity },
-              { label: "Validation AUC", value: 99.11, suffix: "%", decimals: 2, icon: Scan },
-              { label: "MRI Scans", value: 7023, suffix: "", decimals: 0, icon: Activity },
-              { label: "Tumor Classes", value: 4, suffix: "", decimals: 0, icon: Scan },
+              { label: "Validation Acc", value: 94.75, suffix: "%", decimals: 2, icon: Activity, color: "text-coral" },
+              { label: "Validation AUC", value: 99.11, suffix: "%", decimals: 2, icon: Scan, color: "text-amber" },
+              { label: "MRI Scans", value: 7023, suffix: "", decimals: 0, icon: Activity, color: "text-cyan" },
+              { label: "Tumor Classes", value: 4, suffix: "", decimals: 0, icon: Scan, color: "text-purple" },
             ].map((s) => (
               <div
                 key={s.label}
-                className="rounded-lg glass p-3 sm:p-4 hover:border-teal/50 transition-colors"
+                className="rounded-lg glass p-3 sm:p-4 hover:border-coral/50 transition-colors"
               >
-                <s.icon className="w-4 h-4 text-teal mb-2" />
+                <s.icon className={`w-4 h-4 mb-2 ${s.color}`} />
                 <div className="text-xl sm:text-2xl font-bold tabular-nums text-foreground">
                   <CountUp to={s.value} decimals={s.decimals} suffix={s.suffix} />
                 </div>
@@ -104,7 +104,7 @@ export function Hero() {
               onClick={() =>
                 document.getElementById("problem")?.scrollIntoView({ behavior: "smooth" })
               }
-              className="group inline-flex items-center gap-2 rounded-lg bg-teal text-primary-foreground px-5 py-3 text-sm font-medium hover:bg-teal/90 transition-colors glow-teal"
+              className="group inline-flex items-center gap-2 rounded-lg bg-coral text-primary-foreground px-5 py-3 text-sm font-medium hover:bg-coral/90 transition-colors"
             >
               Explore the study
               <ArrowDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
@@ -124,7 +124,7 @@ export function Hero() {
         className="absolute bottom-6 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-1 text-muted-foreground"
       >
         <span className="text-[10px] font-mono tracking-widest">SCROLL</span>
-        <div className="w-px h-8 bg-gradient-to-b from-teal/60 to-transparent animate-pulse" />
+        <div className="w-px h-8 bg-gradient-to-b from-coral/60 to-transparent animate-pulse" />
       </motion.div>
     </section>
   );

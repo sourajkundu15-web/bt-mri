@@ -8,7 +8,7 @@ import * as THREE from "three";
 /**
  * A point-cloud "brain" — two lobes built from a gaussian sphere, sliced
  * down the middle, with a glowing neural lattice of connection lines and
- * orbiting synapse particles. Teal / cyan / emerald palette.
+ * orbiting synapse particles. Coral / amber / cyan / purple palette.
  */
 
 function BrainCloud() {
@@ -21,9 +21,10 @@ function BrainCloud() {
     const colors = new Float32Array(count * 3);
 
     const palette = [
-      new THREE.Color("#2ee6c4"), // teal
-      new THREE.Color("#19d3c5"), // cyan
-      new THREE.Color("#3be587"), // emerald
+      new THREE.Color("#ff6b6b"), // coral
+      new THREE.Color("#ffcb6b"), // amber
+      new THREE.Color("#89ddff"), // cyan
+      new THREE.Color("#c792ea"), // purple
     ];
 
     for (let i = 0; i < count; i++) {
@@ -47,7 +48,7 @@ function BrainCloud() {
       positions[i * 3 + 1] = y;
       positions[i * 3 + 2] = z;
 
-      const c = palette[i % 3];
+      const c = palette[i % 4];
       const dim = 0.55 + Math.random() * 0.45;
       colors[i * 3] = c.r * dim;
       colors[i * 3 + 1] = c.g * dim;
@@ -107,7 +108,7 @@ function BrainCloud() {
             args={[linePositions, 3]}
           />
         </bufferGeometry>
-        <lineBasicMaterial color="#2ee6c4" transparent opacity={0.18} />
+        <lineBasicMaterial color="#ff6b6b" transparent opacity={0.18} />
       </lineSegments>
     </group>
   );
@@ -140,7 +141,7 @@ function OrbitingSynapses() {
       <Points positions={positions} stride={3}>
         <PointMaterial
           transparent
-          color="#7fffd4"
+          color="#ffcb6b"
           size={0.06}
           sizeAttenuation
           depthWrite={false}
@@ -163,7 +164,7 @@ function ScanRing() {
   return (
     <mesh ref={ref} rotation={[Math.PI / 2, 0, 0]}>
       <ringGeometry args={[2.05, 2.12, 96]} />
-      <meshBasicMaterial color="#2ee6c4" transparent opacity={0.35} side={THREE.DoubleSide} />
+      <meshBasicMaterial color="#ff6b6b" transparent opacity={0.35} side={THREE.DoubleSide} />
     </mesh>
   );
 }
@@ -177,8 +178,8 @@ export default function NeuralBrain() {
       style={{ background: "transparent" }}
     >
       <ambientLight intensity={0.6} />
-      <pointLight position={[5, 5, 5]} intensity={1.2} color="#2ee6c4" />
-      <pointLight position={[-5, -3, -2]} intensity={0.8} color="#3be587" />
+      <pointLight position={[5, 5, 5]} intensity={1.2} color="#ff6b6b" />
+      <pointLight position={[-5, -3, -2]} intensity={0.8} color="#ffcb6b" />
       <Float speed={1.4} rotationIntensity={0.35} floatIntensity={0.6}>
         <BrainCloud />
       </Float>

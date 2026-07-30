@@ -20,14 +20,14 @@ export function Architecture() {
           {/* Code panel */}
           <div className="lg:col-span-3 section-reveal">
             <div className="rounded-xl overflow-hidden glass-strong">
-              <div className="flex items-center gap-2 px-4 py-2.5 border-b border-teal/15 bg-teal/5">
+              <div className="flex items-center gap-2 px-4 py-2.5 border-b border-coral/15 bg-coral/5">
                 <div className="flex gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-destructive/60" />
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-400/60" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald/60" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber/60" />
                 </div>
                 <span className="font-mono text-xs text-muted-foreground ml-2">model.py</span>
-                <span className="ml-auto font-mono text-[10px] text-teal/70">CELL 1</span>
+                <span className="ml-auto font-mono text-[10px] text-coral/70">CELL 1</span>
               </div>
               <pre className="p-4 sm:p-5 overflow-x-auto text-[12.5px] leading-relaxed font-mono">
                 <code>
@@ -94,8 +94,8 @@ export function Architecture() {
 
         {/* Layers table */}
         <div className="mt-8 section-reveal rounded-xl glass overflow-hidden">
-          <div className="flex items-center gap-3 px-5 py-3 border-b border-teal/15 bg-teal/5">
-            <Cpu className="w-4 h-4 text-teal" />
+          <div className="flex items-center gap-3 px-5 py-3 border-b border-coral/15 bg-coral/5">
+            <Cpu className="w-4 h-4 text-coral" />
             <span className="font-semibold text-sm">Layer-by-layer topology</span>
             <span className="ml-auto font-mono text-[10px] text-muted-foreground">
               model.summary()
@@ -104,7 +104,7 @@ export function Architecture() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-xs uppercase tracking-wider text-muted-foreground border-b border-teal/10">
+                <tr className="text-left text-xs uppercase tracking-wider text-muted-foreground border-b border-coral/10">
                   <th className="px-5 py-3 font-medium">Layer</th>
                   <th className="px-5 py-3 font-medium">Output shape</th>
                   <th className="px-5 py-3 font-medium">Params</th>
@@ -119,18 +119,18 @@ export function Architecture() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.08 }}
-                    className="border-b border-teal/5 hover:bg-teal/5 transition-colors"
+                    className="border-b border-coral/5 hover:bg-coral/5 transition-colors"
                   >
                     <td className="px-5 py-3 font-mono text-foreground">{l.layer}</td>
                     <td className="px-5 py-3 font-mono text-muted-foreground">{l.shape}</td>
-                    <td className="px-5 py-3 font-mono text-teal">{l.params}</td>
+                    <td className="px-5 py-3 font-mono text-coral">{l.params}</td>
                     <td className="px-5 py-3">
                       {l.status === "frozen" ? (
                         <span className="inline-flex items-center gap-1.5 text-xs text-cyan">
                           <Snowflake className="w-3.5 h-3.5" /> Frozen
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1.5 text-xs text-emerald">
+                        <span className="inline-flex items-center gap-1.5 text-xs text-coral">
                           <Flame className="w-3.5 h-3.5" /> Trainable
                         </span>
                       )}

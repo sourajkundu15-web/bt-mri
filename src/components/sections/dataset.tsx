@@ -9,7 +9,7 @@ function Donut() {
   const total = datasetStats.splits.reduce((a, b) => a + b.count, 0);
   const radius = 70;
   const circ = 2 * Math.PI * radius;
-  const colors = ["#2ee6c4", "#19d3c5", "#3be587"];
+  const colors = ["#ff6b6b", "#ffcb6b", "#89ddff"];
 
   // Pre-compute cumulative offsets purely (no mutation during render).
   const segments = datasetStats.splits.reduce<
@@ -43,7 +43,7 @@ function Donut() {
         ))}
       </svg>
       <div className="absolute text-center">
-        <div className="text-3xl font-bold text-gradient-teal">
+        <div className="text-3xl font-bold text-gradient-coral">
           <CountUp to={datasetStats.total} decimals={0} />
         </div>
         <div className="text-[11px] text-muted-foreground font-mono tracking-widest mt-1">
@@ -78,7 +78,7 @@ export function Dataset() {
                       <span className="flex items-center gap-2">
                         <span
                           className="w-2.5 h-2.5 rounded-sm"
-                          style={{ background: ["#2ee6c4", "#19d3c5", "#3be587"][i] }}
+                          style={{ background: ["#ff6b6b", "#ffcb6b", "#89ddff"][i] }}
                         />
                         {s.name}
                       </span>
@@ -89,7 +89,7 @@ export function Dataset() {
                     <div className="h-1.5 rounded-full bg-muted overflow-hidden">
                       <motion.div
                         className="h-full rounded-full"
-                        style={{ background: ["#2ee6c4", "#19d3c5", "#3be587"][i] }}
+                        style={{ background: ["#ff6b6b", "#ffcb6b", "#89ddff"][i] }}
                         initial={{ width: 0 }}
                         whileInView={{ width: `${s.pct}%` }}
                         viewport={{ once: true }}
@@ -98,14 +98,14 @@ export function Dataset() {
                     </div>
                   </div>
                 ))}
-                <div className="pt-4 mt-4 border-t border-teal/15 grid grid-cols-3 gap-3 text-center">
+                <div className="pt-4 mt-4 border-t border-coral/15 grid grid-cols-3 gap-3 text-center">
                   {[
                     { l: "Classes", v: 4 },
                     { l: "Img size", v: "224²" },
                     { l: "Batch", v: 100 },
                   ].map((x) => (
                     <div key={x.l}>
-                      <div className="text-lg font-bold text-teal tabular-nums">{x.v}</div>
+                      <div className="text-lg font-bold text-coral tabular-nums">{x.v}</div>
                       <div className="text-[10px] text-muted-foreground uppercase tracking-wider">
                         {x.l}
                       </div>
@@ -120,7 +120,7 @@ export function Dataset() {
           <div className="section-reveal space-y-4">
             <div className="rounded-xl glass p-6">
               <div className="flex items-center gap-3 mb-3">
-                <Database className="w-5 h-5 text-teal" />
+                <Database className="w-5 h-5 text-coral" />
                 <h3 className="font-semibold">BT-MRI Dataset</h3>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">
@@ -131,13 +131,13 @@ export function Dataset() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="rounded-lg glass p-4">
-                <div className="text-2xl font-bold text-teal">
+                <div className="text-2xl font-bold text-coral">
                   <CountUp to={4512} decimals={0} />
                 </div>
                 <div className="text-xs text-muted-foreground mt-1">Training images</div>
               </div>
               <div className="rounded-lg glass p-4">
-                <div className="text-2xl font-bold text-cyan">
+                <div className="text-2xl font-bold text-amber">
                   <CountUp to={1600} decimals={0} />
                 </div>
                 <div className="text-xs text-muted-foreground mt-1">Validation images</div>
@@ -149,16 +149,16 @@ export function Dataset() {
         {/* Class gallery with MRI images */}
         <div id="classes" className="mt-12 scroll-mt-24">
           <div className="flex items-center gap-3 mb-6">
-            <span className="h-px flex-1 bg-teal/20" />
+            <span className="h-px flex-1 bg-coral/20" />
             <span className="font-mono text-xs tracking-widest text-muted-foreground">
               FOUR TARGET CLASSES
             </span>
-            <span className="h-px flex-1 bg-teal/20" />
+            <span className="h-px flex-1 bg-coral/20" />
           </div>
           <StaggerGroup className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {tumorClasses.map((c) => (
               <StaggerItem key={c.name}>
-                <div className="group rounded-xl overflow-hidden glass hover:border-teal/50 transition-all duration-300">
+                <div className="group rounded-xl overflow-hidden glass hover:border-coral/50 transition-all duration-300">
                   <div className="relative aspect-square overflow-hidden">
                     <img
                       src={c.image}
@@ -167,7 +167,7 @@ export function Dataset() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
                     {/* scan line */}
-                    <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-teal/30 to-transparent animate-scan-line pointer-events-none" />
+                    <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-coral/30 to-transparent animate-scan-line pointer-events-none" />
                     <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
                       <div>
                         <div className="text-lg font-bold leading-tight" style={{ color: c.accent }}>
@@ -181,7 +181,7 @@ export function Dataset() {
                   </div>
                   <div className="p-4">
                     <p className="text-xs text-muted-foreground leading-relaxed">{c.description}</p>
-                    <p className="text-[11px] text-muted-foreground/70 leading-relaxed mt-2 pt-2 border-t border-teal/10">
+                    <p className="text-[11px] text-muted-foreground/70 leading-relaxed mt-2 pt-2 border-t border-coral/10">
                       {c.detail}
                     </p>
                   </div>

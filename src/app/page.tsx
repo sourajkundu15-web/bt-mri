@@ -3,6 +3,7 @@
 import { useReveal } from "@/hooks/use-reveal";
 import { NavBar } from "@/components/sections/navbar";
 import { Hero } from "@/components/sections/hero";
+import { NeuralVision } from "@/components/sections/neural-vision";
 import { Problem } from "@/components/sections/problem";
 import { Dataset } from "@/components/sections/dataset";
 import { Pipeline } from "@/components/sections/pipeline";
@@ -20,6 +21,7 @@ export default function Home() {
       <NavBar />
       <main className="flex-1">
         <Hero />
+        <NeuralVision />
         <Problem />
         <Dataset />
         <Pipeline />

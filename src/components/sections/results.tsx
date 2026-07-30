@@ -35,9 +35,8 @@ export function Results() {
               transition={{ delay: i * 0.1 }}
               className="relative rounded-xl glass-strong p-6 text-center overflow-hidden group"
             >
-              <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-teal/10 blur-2xl group-hover:bg-teal/20 transition-colors" />
               <div className="relative">
-                <div className="text-3xl sm:text-4xl font-bold text-gradient-teal tabular-nums">
+                <div className="text-3xl sm:text-4xl font-bold text-gradient-coral tabular-nums">
                   <CountUp to={s.value} decimals={s.decimals} suffix={s.suffix} />
                 </div>
                 <div className="text-[11px] sm:text-xs text-muted-foreground mt-2">{s.label}</div>
@@ -50,9 +49,9 @@ export function Results() {
           {/* What worked */}
           <StaggerGroup>
             <StaggerItem>
-              <div className="rounded-xl glass p-6 h-full border-emerald/30">
+              <div className="rounded-xl glass p-6 h-full border-amber/30">
                 <div className="flex items-center gap-3 mb-5">
-                  <span className="grid place-items-center w-10 h-10 rounded-lg bg-emerald/15 text-emerald">
+                  <span className="grid place-items-center w-10 h-10 rounded-lg bg-amber/15 text-amber">
                     <Check className="w-5 h-5" />
                   </span>
                   <h3 className="text-lg font-semibold">What worked</h3>
@@ -60,7 +59,7 @@ export function Results() {
                 <ul className="space-y-4">
                   {whatWorked.map((w) => (
                     <li key={w} className="flex items-start gap-3 text-sm text-muted-foreground">
-                      <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-emerald shrink-0" />
+                      <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-amber shrink-0" />
                       <span className="leading-relaxed">{w}</span>
                     </li>
                   ))}
@@ -72,9 +71,9 @@ export function Results() {
           {/* What's next */}
           <StaggerGroup>
             <StaggerItem>
-              <div className="rounded-xl glass p-6 h-full border-teal/30">
+              <div className="rounded-xl glass p-6 h-full border-coral/30">
                 <div className="flex items-center gap-3 mb-5">
-                  <span className="grid place-items-center w-10 h-10 rounded-lg bg-teal/15 text-teal">
+                  <span className="grid place-items-center w-10 h-10 rounded-lg bg-coral/15 text-coral">
                     <ArrowRight className="w-5 h-5" />
                   </span>
                   <h3 className="text-lg font-semibold">What&apos;s next</h3>
@@ -82,7 +81,7 @@ export function Results() {
                 <ul className="space-y-4">
                   {whatsNext.map((w) => (
                     <li key={w} className="flex items-start gap-3 text-sm text-muted-foreground">
-                      <ArrowRight className="w-4 h-4 text-teal shrink-0 mt-0.5" />
+                      <ArrowRight className="w-4 h-4 text-coral shrink-0 mt-0.5" />
                       <span className="leading-relaxed">{w}</span>
                     </li>
                   ))}
@@ -100,10 +99,10 @@ export function Results() {
           transition={{ duration: 0.7 }}
           className="mt-12 rounded-2xl glass-strong p-8 sm:p-12 text-center relative overflow-hidden"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-teal/10 via-transparent to-emerald/10" />
+          <div className="absolute inset-0 bg-gradient-to-br from-coral/10 via-transparent to-amber/10" />
           <div className="relative">
-            <Trophy className="w-10 h-10 text-teal mx-auto mb-4" />
-            <p className="text-xl sm:text-2xl font-semibold text-gradient-teal max-w-2xl mx-auto leading-relaxed">
+            <Trophy className="w-10 h-10 text-amber mx-auto mb-4" />
+            <p className="text-xl sm:text-2xl font-semibold text-gradient-coral max-w-2xl mx-auto leading-relaxed">
               &gt;94% accuracy on a 4-class brain-tumor MRI task — with only ~7k images and a
               frozen VGG19 backbone.
             </p>

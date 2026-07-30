@@ -62,7 +62,7 @@ export function Problem() {
               </StaggerItem>
               <StaggerItem>
                 <GlowCard className="h-full">
-                  <Sparkles className="w-6 h-6 text-emerald mb-3" />
+                  <Sparkles className="w-6 h-6 text-amber mb-3" />
                   <h4 className="font-semibold mb-1.5">Fresh dense head</h4>
                   <p className="text-xs text-muted-foreground leading-relaxed">
                     Train a task-specific head — 2× Dense(4096) + softmax — on brain MRI to learn
@@ -72,7 +72,7 @@ export function Problem() {
               </StaggerItem>
               <StaggerItem>
                 <GlowCard className="h-full">
-                  <Zap className="w-6 h-6 text-teal mb-3" />
+                  <Zap className="w-6 h-6 text-coral mb-3" />
                   <h4 className="font-semibold mb-1.5">Multi-metric</h4>
                   <p className="text-xs text-muted-foreground leading-relaxed">
                     Track accuracy, precision, recall &amp; AUC jointly — never accuracy alone —
@@ -84,7 +84,7 @@ export function Problem() {
 
             <StaggerItem>
               <div className="mt-4 rounded-xl glass p-5">
-                <div className="font-mono text-[11px] tracking-widest text-teal mb-3">
+                <div className="font-mono text-[11px] tracking-widest text-coral mb-3">
                   TRANSFER LEARNING FLOW
                 </div>
                 <div className="flex flex-wrap items-center gap-2 text-sm">
@@ -99,7 +99,7 @@ export function Problem() {
                         className={
                           t === "→"
                             ? "text-muted-foreground"
-                            : "px-2.5 py-1 rounded-md bg-teal/10 border border-teal/30 text-foreground"
+                            : "px-2.5 py-1 rounded-md bg-coral/12 border border-coral/35 text-foreground"
                         }
                       >
                         {t}

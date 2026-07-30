@@ -88,9 +88,9 @@ export const datasetStats = {
   test: 911,
   classes: 4,
   splits: [
-    { name: "Training", count: 4512, pct: 64.3, color: "var(--teal)" },
-    { name: "Validation", count: 1600, pct: 22.8, color: "var(--cyan)" },
-    { name: "Testing", count: 911, pct: 13.0, color: "var(--emerald)" },
+    { name: "Training", count: 4512, pct: 64.3, color: "var(--coral)" },
+    { name: "Validation", count: 1600, pct: 22.8, color: "var(--amber)" },
+    { name: "Testing", count: 911, pct: 13.0, color: "var(--cyan)" },
   ],
 };
 
@@ -112,7 +112,7 @@ export const tumorClasses: TumorClass[] = [
     detail:
       "Arises from the supportive glial tissue. Visually heterogeneous on MRI, often with irregular contrast enhancement.",
     image: "/mri/glioma.png",
-    accent: "var(--teal)",
+    accent: "var(--coral)",
     confusionNote: "Cleanest class — near-zero confusion with others.",
   },
   {
@@ -122,7 +122,7 @@ export const tumorClasses: TumorClass[] = [
     detail:
       "Originates in the membranes covering the brain and spinal cord. Typically well-circumscribed extra-axial masses.",
     image: "/mri/meningioma.png",
-    accent: "var(--emerald)",
+    accent: "var(--amber)",
     confusionNote: "Most often confused with glioma (similar mass appearance).",
   },
   {
@@ -142,7 +142,7 @@ export const tumorClasses: TumorClass[] = [
     detail:
       "Located in the sella turcica. Small tumor region but well-detected thanks to strong T1 contrast enhancement.",
     image: "/mri/pituitary.png",
-    accent: "var(--chart-4)",
+    accent: "var(--purple)",
     confusionNote: "Small region but well-detected via T1 contrast.",
   },
 ];
@@ -179,9 +179,9 @@ export const layers: LayerInfo[] = [
 ];
 
 export const paramBreakdown = [
-  { label: "Total params", value: 378.7, unit: "M", color: "var(--teal)" },
-  { label: "Trainable", value: 119.6, unit: "M", color: "var(--cyan)" },
-  { label: "Frozen", value: 20.0, unit: "M", color: "var(--emerald)" },
+  { label: "Total params", value: 378.7, unit: "M", color: "var(--coral)" },
+  { label: "Trainable", value: 119.6, unit: "M", color: "var(--purple)" },
+  { label: "Frozen", value: 20.0, unit: "M", color: "var(--cyan)" },
 ];
 
 // Confusion matrix (4×4) — reconstructed from per-class analysis in the deck.

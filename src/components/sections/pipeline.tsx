@@ -9,9 +9,9 @@ const stateMeta: Record<
   PipelineStage["state"],
   { label: string; color: string; icon: typeof Snowflake }
 > = {
-  frozen: { label: "FROZEN", color: "#19d3c5", icon: Snowflake },
-  trainable: { label: "TRAINABLE", color: "#3be587", icon: Flame },
-  io: { label: "DATA", color: "#2ee6c4", icon: ScanLine },
+  frozen: { label: "FROZEN", color: "#89ddff", icon: Snowflake },
+  trainable: { label: "TRAINABLE", color: "#ff6b6b", icon: Flame },
+  io: { label: "DATA", color: "#ffcb6b", icon: ScanLine },
 };
 
 export function Pipeline() {
@@ -38,7 +38,7 @@ export function Pipeline() {
                 y1="4"
                 x2="1000"
                 y2="4"
-                stroke="#2ee6c4"
+                stroke="#ff6b6b"
                 strokeWidth="1.5"
                 strokeDasharray="6 6"
                 className="animate-dash-flow"
@@ -61,17 +61,13 @@ export function Pipeline() {
                     <div className="flex flex-col items-center">
                       <div
                         className="relative grid place-items-center w-[116px] h-[116px] rounded-full glass border-2"
-                        style={{ borderColor: meta.color + "55" }}
+                        style={{ borderColor: meta.color + "66" }}
                       >
-                        <div
-                          className="absolute inset-2 rounded-full blur-md opacity-40"
-                          style={{ background: meta.color }}
-                        />
                         <meta.icon
                           className="relative w-7 h-7"
                           style={{ color: meta.color }}
                         />
-                        <span className="absolute -top-2 -right-2 text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-background border border-teal/30 text-teal">
+                        <span className="absolute -top-2 -right-2 text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-background border border-coral/40 text-coral">
                           {s.step}
                         </span>
                       </div>
@@ -108,10 +104,10 @@ export function Pipeline() {
                 >
                   <div
                     className="relative grid place-items-center w-14 h-14 rounded-full shrink-0 border-2"
-                    style={{ borderColor: meta.color + "55" }}
+                    style={{ borderColor: meta.color + "66" }}
                   >
                     <meta.icon className="w-6 h-6" style={{ color: meta.color }} />
-                    <span className="absolute -top-1 -right-1 text-[9px] font-mono px-1 rounded-full bg-background border border-teal/30 text-teal">
+                    <span className="absolute -top-1 -right-1 text-[9px] font-mono px-1 rounded-full bg-background border border-coral/40 text-coral">
                       {s.step}
                     </span>
                   </div>

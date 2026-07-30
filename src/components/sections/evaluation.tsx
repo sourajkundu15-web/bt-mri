@@ -11,7 +11,7 @@ export function Evaluation() {
   const max = Math.max(...rows.flat());
   const total = rows.flat().reduce((a, b) => a + b, 0);
 
-  const classColors = ["#2ee6c4", "#3be587", "#19d3c5", "#3be587"];
+  const classColors = ["#ff6b6b", "#ffcb6b", "#89ddff", "#c792ea"];
 
   return (
     <section id="evaluation" className="relative py-24 sm:py-32">
@@ -28,7 +28,7 @@ export function Evaluation() {
           <div className="lg:col-span-3 section-reveal">
             <div className="rounded-xl glass p-6">
               <div className="flex items-center gap-2 mb-5">
-                <Grid3x3 className="w-4 h-4 text-teal" />
+                <Grid3x3 className="w-4 h-4 text-coral" />
                 <h3 className="font-semibold text-sm">911 test scans · 4×4 confusion matrix</h3>
               </div>
 
@@ -78,10 +78,10 @@ export function Evaluation() {
                                   className="relative aspect-square rounded-md grid place-items-center group cursor-default"
                                   style={{
                                     background: isDiag
-                                      ? `oklch(0.78 0.16 172 / ${0.15 + intensity * 0.6})`
-                                      : `oklch(0.7 0.18 40 / ${intensity * 0.7})`,
+                                      ? `rgba(255, 107, 107, ${0.22 + intensity * 0.6})`
+                                      : `rgba(255, 203, 107, ${0.14 + intensity * 0.65})`,
                                     border: `1px solid ${
-                                      isDiag ? "oklch(0.78 0.16 172 / 0.4)" : "oklch(0.7 0.18 40 / 0.3)"
+                                      isDiag ? "rgba(255, 107, 107, 0.5)" : "rgba(255, 203, 107, 0.4)"
                                     }`,
                                   }}
                                 >
@@ -106,11 +106,11 @@ export function Evaluation() {
                   {/* legend */}
                   <div className="mt-5 flex items-center justify-center gap-5 text-[11px] text-muted-foreground">
                     <div className="flex items-center gap-2">
-                      <span className="w-3 h-3 rounded-sm" style={{ background: "oklch(0.78 0.16 172 / 0.6)" }} />
+                      <span className="w-3 h-3 rounded-sm" style={{ background: "rgba(255, 107, 107, 0.6)" }} />
                       Correct
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="w-3 h-3 rounded-sm" style={{ background: "oklch(0.7 0.18 40 / 0.6)" }} />
+                      <span className="w-3 h-3 rounded-sm" style={{ background: "rgba(255, 203, 107, 0.6)" }} />
                       Confusion
                     </div>
                   </div>
@@ -124,7 +124,7 @@ export function Evaluation() {
             <StaggerGroup className="space-y-3">
               {tumorClasses.map((c, i) => (
                 <StaggerItem key={c.name}>
-                  <div className="rounded-lg glass p-4 hover:border-teal/40 transition-colors">
+                  <div className="rounded-lg glass p-4 hover:border-coral/40 transition-colors">
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="font-semibold text-sm" style={{ color: classColors[i] }}>
                         {c.name}

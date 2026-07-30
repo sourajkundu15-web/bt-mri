@@ -18,13 +18,13 @@ export function SectionHeading({
   return (
     <div className="section-reveal mb-12 max-w-3xl">
       <div className="flex items-center gap-3 mb-4">
-        <span className="font-mono text-xs text-teal/80 tracking-widest">{index}</span>
-        <span className="h-px w-10 bg-teal/40" />
+        <span className="font-mono text-xs text-coral/80 tracking-widest">{index}</span>
+        <span className="h-px w-10 bg-coral/40" />
         <span className="font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground">
           {kicker}
         </span>
       </div>
-      <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gradient-teal">
+      <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gradient-coral">
         {title}
       </h2>
       {description && (
@@ -141,7 +141,7 @@ export function GlowCard({
   return (
     <div
       className={cn(
-        "relative rounded-xl glass p-6 transition-all duration-300 hover:border-teal/50 hover:shadow-[0_0_50px_-12px_var(--teal)]",
+        "relative rounded-xl glass p-6 transition-all duration-300 hover:border-coral/55",
         className
       )}
     >

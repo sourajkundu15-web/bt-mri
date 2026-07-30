@@ -43,7 +43,7 @@ export function NavBar() {
     <header
       className={cn(
         "fixed top-0 inset-x-0 z-50 transition-all duration-300",
-        scrolled ? "glass-strong border-b border-teal/15" : "bg-transparent"
+        scrolled ? "glass-strong border-b border-coral/15" : "bg-transparent"
       )}
     >
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -51,12 +51,11 @@ export function NavBar() {
           onClick={() => handleClick("overview")}
           className="flex items-center gap-2.5 group"
         >
-          <span className="relative grid place-items-center w-9 h-9 rounded-lg bg-teal/15 border border-teal/40">
-            <Brain className="w-5 h-5 text-teal" />
-            <span className="absolute inset-0 rounded-lg bg-teal/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
+          <span className="relative grid place-items-center w-9 h-9 rounded-lg bg-coral/15 border border-coral/40">
+            <Brain className="w-5 h-5 text-coral" />
           </span>
           <span className="font-semibold tracking-tight">
-            VGG19<span className="text-teal">·</span>MRI
+            VGG19<span className="text-coral">·</span>MRI
           </span>
         </button>
 
@@ -68,7 +67,7 @@ export function NavBar() {
               className={cn(
                 "relative px-3 py-1.5 text-sm rounded-md transition-colors",
                 active === n.id
-                  ? "text-teal"
+                  ? "text-coral"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
@@ -76,7 +75,7 @@ export function NavBar() {
               {active === n.id && (
                 <motion.span
                   layoutId="nav-active"
-                  className="absolute inset-0 rounded-md bg-teal/10 border border-teal/30"
+                  className="absolute inset-0 rounded-md bg-coral/10 border border-coral/30"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -99,7 +98,7 @@ export function NavBar() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="lg:hidden overflow-hidden glass-strong border-b border-teal/15"
+            className="lg:hidden overflow-hidden glass-strong border-b border-coral/15"
           >
             <div className="px-4 py-3 grid grid-cols-2 gap-1">
               {navItems.map((n) => (
@@ -109,7 +108,7 @@ export function NavBar() {
                   className={cn(
                     "px-3 py-2 text-sm text-left rounded-md",
                     active === n.id
-                      ? "text-teal bg-teal/10"
+                      ? "text-coral bg-coral/10"
                       : "text-muted-foreground hover:text-foreground"
                   )}
                 >
