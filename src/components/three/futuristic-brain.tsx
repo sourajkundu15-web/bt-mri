@@ -5,14 +5,15 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
 /**
- * A futuristic 3D brain:
- *  - a solid two-lobe body with a gyral/wrinkled surface (emissive, fresnel-like)
- *  - glowing surface neurons distributed across both lobes
- *  - animated firing synapse arcs between random neuron pairs
- *  - continuous slow rotation so the 3D form reads clearly
- * Palette: coral / amber / cyan / purple on the deep-indigo base.
+ * Futuristic 3D brain — built on the user-supplied Three.js approach:
+ *   - a wireframe sphere (MeshStandardMaterial, wireframe: true, color 0x61dafb)
+ *     deformed into a two-lobe brain shape
+ *   - rotation.x += 0.01 and rotation.y += 0.01 per frame (continuous spin)
+ *   - PointLight(0xffffff, 3) + AmbientLight(0x333333) lighting rig
+ * Plus glowing surface neurons + firing synapse arcs for the "futuristic" feel.
  */
 
+/** Sample a point inside one brain lobe (squashed sphere + central fissure). */
 function lobePoint(lobeX: number) {
   const r = Math.pow(Math.random(), 0.33) * 1.5;
   const theta = Math.random() * Math.PI * 2;
@@ -26,9 +27,14 @@ function lobePoint(lobeX: number) {
   return new THREE.Vector3(x, y, z);
 }
 
-function BrainBody() {
+/**
+ * The brain body: a SphereGeometry deformed into two lobes with gyral wrinkles,
+ * rendered with the user's wireframe MeshStandardMaterial (0x61dafb).
+ */
+function BrainMesh() {
   const geo = useMemo(() => {
-    const g = new THREE.IcosahedronGeometry(1.55, 7);
+    // Start from a sphere (matching the user's SphereGeometry(1.5, 32, 32) sizing)
+    const g = new THREE.SphereGeometry(1.5, 48, 48);
     const pos = g.attributes.position as THREE.BufferAttribute;
     const v = new THREE.Vector3();
     for (let i = 0; i < pos.count; i++) {
@@ -38,61 +44,36 @@ function BrainBody() {
       const nz = v.z;
       // two-lobe split along x
       const lobe = nx < 0 ? -0.4 : 0.4;
-      let x = nx;
-      // pinch centre to create the longitudinal fissure
       const pinch = Math.exp(-Math.pow(nx / 0.22, 2));
-      x = nx + lobe * 0.32 * pinch;
-      let y = ny * (1 - pinch * 0.35);
+      const x = nx + lobe * 0.32 * pinch;
+      const y = ny * (1 - pinch * 0.35);
       const z = nz * 0.88;
-      // gyral wrinkles — layered sinusoidal noise along the surface
+      // gyral wrinkles — layered sinusoidal noise
       const wrinkle =
         Math.sin(x * 7 + nz * 2) * 0.045 +
         Math.sin(y * 9 + x * 3) * 0.035 +
-        Math.sin(z * 8) * 0.03 +
-        Math.sin(x * 14 + y * 11) * 0.015;
+        Math.sin(z * 8) * 0.03;
       const len = Math.hypot(x, y, z) || 1;
-      const nx2 = x / len;
-      const ny2 = y / len;
-      const nz2 = z / len;
       pos.setXYZ(
         i,
-        x + nx2 * wrinkle,
-        y + ny2 * wrinkle,
-        z + nz2 * wrinkle
+        x + (x / len) * wrinkle,
+        y + (y / len) * wrinkle,
+        z + (z / len) * wrinkle
       );
     }
     g.computeVertexNormals();
     return g;
   }, []);
 
+  // User's material: MeshStandardMaterial({ color: 0x61dafb, wireframe: true })
   return (
-    <group>
-      {/* solid brain body — emissive, translucent */}
-      <mesh geometry={geo}>
-        <meshStandardMaterial
-          color="#2a30a0"
-          emissive="#ff6b6b"
-          emissiveIntensity={0.18}
-          transparent
-          opacity={0.55}
-          roughness={0.35}
-          metalness={0.45}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
-      {/* subtle wireframe overlay for the tech feel */}
-      <mesh geometry={geo}>
-        <meshBasicMaterial
-          color="#89ddff"
-          wireframe
-          transparent
-          opacity={0.1}
-        />
-      </mesh>
-    </group>
+    <mesh geometry={geo}>
+      <meshStandardMaterial color={0x61dafb} wireframe />
+    </mesh>
   );
 }
 
+/** Glowing neuron points scattered across both lobes. */
 function SurfaceNeurons() {
   const palette = ["#ff6b6b", "#ffcb6b", "#89ddff", "#c792ea"];
   const COUNT = 110;
@@ -104,8 +85,7 @@ function SurfaceNeurons() {
     for (let i = 0; i < COUNT; i++) {
       const lobeX = i % 2 === 0 ? -0.4 : 0.4;
       const p = lobePoint(lobeX);
-      // project to just outside the surface
-      p.normalize().multiplyScalar(1.5 + Math.random() * 0.08);
+      p.normalize().multiplyScalar(1.46 + Math.random() * 0.08);
       p.x += lobeX * 0.2;
       p.y *= 0.8;
       positions[i * 3] = p.x;
@@ -119,7 +99,6 @@ function SurfaceNeurons() {
     return { positions, colors };
   }, []);
 
-  const ref = useRef<THREE.Points>(null);
   const matRef = useRef<THREE.PointsMaterial>(null);
   useFrame((state) => {
     if (matRef.current) {
@@ -128,7 +107,7 @@ function SurfaceNeurons() {
   });
 
   return (
-    <points ref={ref}>
+    <points>
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
         <bufferAttribute attach="attributes-color" args={[colors, 3]} />
@@ -146,6 +125,7 @@ function SurfaceNeurons() {
   );
 }
 
+/** Firing synapse arcs — glowing spheres travelling along bezier curves. */
 function Synapses() {
   const pairs = useMemo(() => {
     const palette = ["#ff6b6b", "#ffcb6b", "#89ddff", "#c792ea"];
@@ -160,7 +140,7 @@ function Synapses() {
     const make = () => {
       const lobeX = Math.random() < 0.5 ? -0.4 : 0.4;
       const p = lobePoint(lobeX);
-      p.normalize().multiplyScalar(1.5 + Math.random() * 0.06);
+      p.normalize().multiplyScalar(1.46 + Math.random() * 0.06);
       p.x += lobeX * 0.2;
       p.y *= 0.8;
       return p;
@@ -218,63 +198,43 @@ function Synapses() {
   );
 }
 
-function OrbitRing({
-  radius,
-  color,
-  opacity,
-  speed,
-  tilt,
-}: {
-  radius: number;
-  color: string;
-  opacity: number;
-  speed: number;
-  tilt: number;
-}) {
-  const ref = useRef<THREE.Mesh>(null);
-  useFrame((state) => {
-    if (ref.current) {
-      ref.current.rotation.z = state.clock.elapsedTime * speed;
-    }
+/**
+ * The brain group — matches the user's animation loop:
+ *   brainMesh.rotation.x += 0.01;
+ *   brainMesh.rotation.y += 0.01;
+ */
+function BrainGroup() {
+  const ref = useRef<THREE.Group>(null);
+  useFrame(() => {
+    if (!ref.current) return;
+    // Exact rotation increments from the user's animate() loop
+    ref.current.rotation.x += 0.01;
+    ref.current.rotation.y += 0.01;
   });
   return (
-    <mesh ref={ref} rotation={[Math.PI / 2 + tilt, 0, 0]}>
-      <ringGeometry args={[radius, radius + 0.04, 96]} />
-      <meshBasicMaterial color={color} transparent opacity={opacity} side={THREE.DoubleSide} />
-    </mesh>
+    <group ref={ref}>
+      <BrainMesh />
+      <SurfaceNeurons />
+      <Synapses />
+    </group>
   );
-}
-
-/** Continuous rotation so the brain's 3D form is unmistakable. */
-function BrainSpin({ children }: { children: React.ReactNode }) {
-  const ref = useRef<THREE.Group>(null);
-  useFrame((state, delta) => {
-    if (!ref.current) return;
-    ref.current.rotation.y += delta * 0.18;
-    ref.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.2) * 0.12;
-  });
-  return <group ref={ref}>{children}</group>;
 }
 
 export default function FuturisticBrain() {
   return (
     <Canvas
-      camera={{ position: [0, 0, 5.2], fov: 45 }}
+      camera={{ position: [0, 0, 5], fov: 75 }}
       dpr={[1, 2]}
       gl={{ antialias: true, alpha: true }}
       style={{ background: "transparent" }}
     >
-      <ambientLight intensity={0.6} />
-      <pointLight position={[5, 4, 5]} intensity={1.3} color="#ff6b6b" />
-      <pointLight position={[-5, -3, -2]} intensity={0.9} color="#89ddff" />
-      <pointLight position={[0, 5, 0]} intensity={0.6} color="#c792ea" />
-      <BrainSpin>
-        <BrainBody />
-        <SurfaceNeurons />
-        <Synapses />
-      </BrainSpin>
-      <OrbitRing radius={2.15} color="#ff6b6b" opacity={0.28} speed={0.4} tilt={0} />
-      <OrbitRing radius={2.35} color="#89ddff" opacity={0.18} speed={-0.3} tilt={0.4} />
+      {/* User's lighting rig: PointLight(0xffffff, 3, 100) at (5,5,5) + AmbientLight(0x333333) */}
+      <pointLight position={[5, 5, 5]} intensity={3} distance={100} color={0xffffff} />
+      <ambientLight intensity={0.2} color={0x333333} />
+      {/* extra colored accents for the futuristic palette */}
+      <pointLight position={[-5, -3, -2]} intensity={1.2} color={0xff6b6b} />
+      <pointLight position={[0, 4, 3]} intensity={0.8} color={0xc792ea} />
+      <BrainGroup />
     </Canvas>
   );
 }

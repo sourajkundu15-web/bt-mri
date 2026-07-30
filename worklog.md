@@ -118,3 +118,25 @@ Stage Summary:
 - Pipeline flowchart nodes are now 3D spheres with perspective tilt + hover 3D rotation
 - Opacity selectively reduced only on background grid/gradient overlays (not content cards)
 - Lint: clean; dev server: 200 responses, no errors
+
+---
+Task ID: 4
+Agent: main (Z.ai Code)
+Task: Use the user's supplied Three.js code (wireframe sphere, 0x61dafb, rotation += 0.01, PointLight + AmbientLight) to make the brain 3D model.
+
+Work Log:
+- Rewrote `src/components/three/futuristic-brain.tsx` to follow the user's Three.js approach, adapted into React Three Fiber:
+  - BrainMesh: SphereGeometry(1.5, 48, 48) deformed into two lobes with gyral wrinkles, rendered with `MeshStandardMaterial({ color: 0x61dafb, wireframe: true })` — exactly the user's material
+  - BrainGroup: useFrame applies `rotation.x += 0.01` and `rotation.y += 0.01` per frame — the exact increments from the user's animate() loop
+  - Lighting rig: `pointLight position [5,5,5] intensity 3 distance 100 color 0xffffff` + `ambientLight intensity 0.2 color 0x333333` — matching the user's PointLight(0xffffff, 3, 100) + AmbientLight(0x333333)
+  - Added two extra colored accent lights (coral + purple) to keep the futuristic palette
+  - Camera fov 75 matching the user's PerspectiveCamera(75, ...)
+  - Kept the glowing surface neurons (110 points) + firing synapse arcs (16) for the "futuristic" feel
+- Verified with Agent Browser + VLM: "3D wireframe brain model composed of cyan/teal lines forming a spherical brain-like shape, clearly rotating, glowing colored dots on it, proper 3D wireframe aesthetic with depth and motion"
+- Lint clean, no console/page errors
+
+Stage Summary:
+- Brain is now a wireframe sphere-brain (0x61dafb cyan wireframe) built from the user's exact Three.js approach
+- Rotates at the user's specified 0.01/frame on both X and Y axes
+- Lighting matches the user's PointLight + AmbientLight setup
+- Lint: clean; dev server: 200 responses, no errors
