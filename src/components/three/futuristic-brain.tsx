@@ -2,38 +2,33 @@
 
 import { useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Float } from "@react-three/drei";
 import * as THREE from "three";
 
 /**
  * A futuristic 3D brain:
- *  - a translucent, subtly distorted two-lobe shell (back-side rendered)
- *  - a wireframe overlay of the same shell
- *  - glowing surface nodes (neurons) distributed across both lobes
- *  - animated firing synapse arcs between random node pairs
- *  - slow auto-rotation + float
- * Palette: coral / amber / cyan / purple.
+ *  - a solid two-lobe body with a gyral/wrinkled surface (emissive, fresnel-like)
+ *  - glowing surface neurons distributed across both lobes
+ *  - animated firing synapse arcs between random neuron pairs
+ *  - continuous slow rotation so the 3D form reads clearly
+ * Palette: coral / amber / cyan / purple on the deep-indigo base.
  */
 
 function lobePoint(lobeX: number) {
-  // Sample a point inside a squashed sphere for one lobe
-  const r = Math.pow(Math.random(), 0.33) * 1.55;
+  const r = Math.pow(Math.random(), 0.33) * 1.5;
   const theta = Math.random() * Math.PI * 2;
   const phi = Math.acos(2 * Math.random() - 1);
   const x = r * Math.sin(phi) * Math.cos(theta) * 0.95 + lobeX;
   let y = r * Math.sin(phi) * Math.sin(theta) * 0.85;
-  const z = r * Math.cos(phi) * 0.8;
+  const z = r * Math.cos(phi) * 0.82;
   y *= 0.78;
-  // central fissure dip
   const gap = Math.exp(-Math.pow(x / 0.18, 2));
   y -= gap * 0.12;
   return new THREE.Vector3(x, y, z);
 }
 
-function BrainShell() {
-  // Distorted two-lobe geometry built from an icosphere, vertices pushed into a brain-ish shape.
+function BrainBody() {
   const geo = useMemo(() => {
-    const g = new THREE.IcosahedronGeometry(1.6, 6);
+    const g = new THREE.IcosahedronGeometry(1.55, 7);
     const pos = g.attributes.position as THREE.BufferAttribute;
     const v = new THREE.Vector3();
     for (let i = 0; i < pos.count; i++) {
@@ -41,21 +36,20 @@ function BrainShell() {
       const nx = v.x;
       const ny = v.y;
       const nz = v.z;
-      // squash + two-lobe split along x
-      const lobe = nx < 0 ? -0.42 : 0.42;
-      let x = Math.abs(nx) * 1.15 * Math.sign(nx) + lobe * 0.35;
-      // keep the two lobes separate near the centre
-      if (Math.abs(nx) < 0.12) x = nx * 0.6 + lobe * 0.5;
-      let y = ny * 0.82;
-      // central fissure
-      const gap = Math.exp(-Math.pow(x / 0.2, 2));
-      y -= gap * 0.18;
-      const z = nz * 0.86;
-      // wrinkly surface using layered sin noise
+      // two-lobe split along x
+      const lobe = nx < 0 ? -0.4 : 0.4;
+      let x = nx;
+      // pinch centre to create the longitudinal fissure
+      const pinch = Math.exp(-Math.pow(nx / 0.22, 2));
+      x = nx + lobe * 0.32 * pinch;
+      let y = ny * (1 - pinch * 0.35);
+      const z = nz * 0.88;
+      // gyral wrinkles — layered sinusoidal noise along the surface
       const wrinkle =
-        Math.sin(x * 6) * 0.04 +
-        Math.sin(y * 7) * 0.035 +
-        Math.sin(z * 8 + x * 3) * 0.03;
+        Math.sin(x * 7 + nz * 2) * 0.045 +
+        Math.sin(y * 9 + x * 3) * 0.035 +
+        Math.sin(z * 8) * 0.03 +
+        Math.sin(x * 14 + y * 11) * 0.015;
       const len = Math.hypot(x, y, z) || 1;
       const nx2 = x / len;
       const ny2 = y / len;
@@ -73,48 +67,47 @@ function BrainShell() {
 
   return (
     <group>
-      {/* translucent inner shell */}
+      {/* solid brain body — emissive, translucent */}
       <mesh geometry={geo}>
         <meshStandardMaterial
-          color="#1c2190"
-          emissive="#4a56a8"
-          emissiveIntensity={0.35}
+          color="#2a30a0"
+          emissive="#ff6b6b"
+          emissiveIntensity={0.18}
           transparent
-          opacity={0.32}
-          roughness={0.4}
-          metalness={0.3}
+          opacity={0.55}
+          roughness={0.35}
+          metalness={0.45}
           side={THREE.DoubleSide}
-          depthWrite={false}
         />
       </mesh>
-      {/* wireframe overlay */}
+      {/* subtle wireframe overlay for the tech feel */}
       <mesh geometry={geo}>
         <meshBasicMaterial
           color="#89ddff"
           wireframe
           transparent
-          opacity={0.18}
+          opacity={0.1}
         />
       </mesh>
     </group>
   );
 }
 
-function SurfaceNodes() {
+function SurfaceNeurons() {
   const palette = ["#ff6b6b", "#ffcb6b", "#89ddff", "#c792ea"];
-  const COUNT = 90;
+  const COUNT = 110;
 
   const { positions, colors } = useMemo(() => {
     const positions = new Float32Array(COUNT * 3);
     const colors = new Float32Array(COUNT * 3);
     const c = palette.map((hex) => new THREE.Color(hex));
     for (let i = 0; i < COUNT; i++) {
-      const lobeX = i % 2 === 0 ? -0.42 : 0.42;
+      const lobeX = i % 2 === 0 ? -0.4 : 0.4;
       const p = lobePoint(lobeX);
-      // push to near-surface (radius ~1.5)
-      p.normalize().multiplyScalar(1.45 + Math.random() * 0.08);
-      p.x += lobeX;
-      p.y *= 0.82;
+      // project to just outside the surface
+      p.normalize().multiplyScalar(1.5 + Math.random() * 0.08);
+      p.x += lobeX * 0.2;
+      p.y *= 0.8;
       positions[i * 3] = p.x;
       positions[i * 3 + 1] = p.y;
       positions[i * 3 + 2] = p.z;
@@ -129,11 +122,8 @@ function SurfaceNodes() {
   const ref = useRef<THREE.Points>(null);
   const matRef = useRef<THREE.PointsMaterial>(null);
   useFrame((state) => {
-    if (ref.current) {
-      ref.current.rotation.y += 0.0015;
-    }
     if (matRef.current) {
-      matRef.current.size = 0.085 + Math.sin(state.clock.elapsedTime * 2) * 0.015;
+      matRef.current.size = 0.09 + Math.sin(state.clock.elapsedTime * 2) * 0.018;
     }
   });
 
@@ -145,7 +135,7 @@ function SurfaceNodes() {
       </bufferGeometry>
       <pointsMaterial
         ref={matRef}
-        size={0.085}
+        size={0.09}
         vertexColors
         transparent
         opacity={0.95}
@@ -157,7 +147,6 @@ function SurfaceNodes() {
 }
 
 function Synapses() {
-  // Pre-generate a set of node pairs and animate small glowing spheres along arcs between them.
   const pairs = useMemo(() => {
     const palette = ["#ff6b6b", "#ffcb6b", "#89ddff", "#c792ea"];
     const arr: {
@@ -169,18 +158,18 @@ function Synapses() {
       offset: number;
     }[] = [];
     const make = () => {
-      const lobeX = Math.random() < 0.5 ? -0.42 : 0.42;
+      const lobeX = Math.random() < 0.5 ? -0.4 : 0.4;
       const p = lobePoint(lobeX);
-      p.normalize().multiplyScalar(1.45 + Math.random() * 0.06);
-      p.x += lobeX;
-      p.y *= 0.82;
+      p.normalize().multiplyScalar(1.5 + Math.random() * 0.06);
+      p.x += lobeX * 0.2;
+      p.y *= 0.8;
       return p;
     };
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < 16; i++) {
       const a = make();
       const b = make();
       const mid = a.clone().add(b).multiplyScalar(0.5);
-      mid.normalize().multiplyScalar(2.1); // bow outward
+      mid.normalize().multiplyScalar(2.2);
       arr.push({
         a,
         b,
@@ -200,7 +189,6 @@ function Synapses() {
       const mesh = meshes.current[i];
       if (!mesh) return;
       const prog = (t * p.speed + p.offset) % 1;
-      // quadratic bezier a -> mid -> b
       const u = prog;
       const inv = 1 - u;
       const x = inv * inv * p.a.x + 2 * inv * u * p.mid.x + u * u * p.b.x;
@@ -222,7 +210,7 @@ function Synapses() {
             meshes.current[i] = m;
           }}
         >
-          <sphereGeometry args={[0.06, 8, 8]} />
+          <sphereGeometry args={[0.065, 8, 8]} />
           <meshBasicMaterial color={p.color} transparent opacity={0.8} />
         </mesh>
       ))}
@@ -230,40 +218,63 @@ function Synapses() {
   );
 }
 
-function OrbitRing() {
+function OrbitRing({
+  radius,
+  color,
+  opacity,
+  speed,
+  tilt,
+}: {
+  radius: number;
+  color: string;
+  opacity: number;
+  speed: number;
+  tilt: number;
+}) {
   const ref = useRef<THREE.Mesh>(null);
   useFrame((state) => {
     if (ref.current) {
-      ref.current.rotation.z = state.clock.elapsedTime * 0.4;
-      ref.current.rotation.x = Math.PI / 2 + Math.sin(state.clock.elapsedTime * 0.3) * 0.15;
+      ref.current.rotation.z = state.clock.elapsedTime * speed;
     }
   });
   return (
-    <mesh ref={ref}>
-      <ringGeometry args={[2.15, 2.2, 96]} />
-      <meshBasicMaterial color="#ff6b6b" transparent opacity={0.3} side={THREE.DoubleSide} />
+    <mesh ref={ref} rotation={[Math.PI / 2 + tilt, 0, 0]}>
+      <ringGeometry args={[radius, radius + 0.04, 96]} />
+      <meshBasicMaterial color={color} transparent opacity={opacity} side={THREE.DoubleSide} />
     </mesh>
   );
+}
+
+/** Continuous rotation so the brain's 3D form is unmistakable. */
+function BrainSpin({ children }: { children: React.ReactNode }) {
+  const ref = useRef<THREE.Group>(null);
+  useFrame((state, delta) => {
+    if (!ref.current) return;
+    ref.current.rotation.y += delta * 0.18;
+    ref.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.2) * 0.12;
+  });
+  return <group ref={ref}>{children}</group>;
 }
 
 export default function FuturisticBrain() {
   return (
     <Canvas
-      camera={{ position: [0, 0, 5.5], fov: 45 }}
+      camera={{ position: [0, 0, 5.2], fov: 45 }}
       dpr={[1, 2]}
       gl={{ antialias: true, alpha: true }}
       style={{ background: "transparent" }}
     >
-      <ambientLight intensity={0.55} />
-      <pointLight position={[5, 4, 5]} intensity={1.1} color="#ff6b6b" />
-      <pointLight position={[-5, -3, -2]} intensity={0.8} color="#89ddff" />
-      <pointLight position={[0, 5, 0]} intensity={0.5} color="#c792ea" />
-      <Float speed={1.1} rotationIntensity={0.25} floatIntensity={0.5}>
-        <BrainShell />
-        <SurfaceNodes />
+      <ambientLight intensity={0.6} />
+      <pointLight position={[5, 4, 5]} intensity={1.3} color="#ff6b6b" />
+      <pointLight position={[-5, -3, -2]} intensity={0.9} color="#89ddff" />
+      <pointLight position={[0, 5, 0]} intensity={0.6} color="#c792ea" />
+      <BrainSpin>
+        <BrainBody />
+        <SurfaceNeurons />
         <Synapses />
-      </Float>
-      <OrbitRing />
+      </BrainSpin>
+      <OrbitRing radius={2.15} color="#ff6b6b" opacity={0.28} speed={0.4} tilt={0} />
+      <OrbitRing radius={2.35} color="#89ddff" opacity={0.18} speed={-0.3} tilt={0.4} />
     </Canvas>
   );
 }

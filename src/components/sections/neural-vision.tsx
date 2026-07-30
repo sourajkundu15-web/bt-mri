@@ -32,7 +32,7 @@ const features = [
 export function NeuralVision() {
   return (
     <section id="neural-vision" className="relative py-24 sm:py-32 overflow-hidden">
-      <div className="absolute inset-0 grid-bg opacity-30" />
+      <div className="absolute inset-0 grid-bg opacity-20" />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
         <div className="grid lg:grid-cols-2 gap-10 items-center">
           {/* 3D futuristic brain */}

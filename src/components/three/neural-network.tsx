@@ -6,39 +6,38 @@ import { Float, Line } from "@react-three/drei";
 import * as THREE from "three";
 
 /**
- * A 3D layered feed-forward neural network.
- * 5 layers (8 → 12 → 10 → 8 → 4) of glowing nodes connected by faint lines,
- * with animated signal pulses travelling left → right along the connections.
- * Palette: coral (input) → amber (hidden) → cyan/purple (output).
+ * A genuinely 3D layered neural network.
+ * Layers recede along the X axis, each node also spans the Z axis so the
+ * structure has real depth. A parent group continuously rotates around Y
+ * (and tilts on X) so the 3D form is clearly visible — not a flat plane.
+ * Palette: coral (input) → amber (hidden) → cyan / purple (output).
  */
 
-type LayerDef = { count: number; x: number; color: string };
+type LayerDef = { count: number; x: number; color: string; zSpread: number };
 
 const LAYERS: LayerDef[] = [
-  { count: 8, x: -4.2, color: "#ff6b6b" }, // input
-  { count: 12, x: -2.1, color: "#ffcb6b" }, // hidden 1
-  { count: 10, x: 0, color: "#ffcb6b" }, // hidden 2
-  { count: 8, x: 2.1, color: "#89ddff" }, // hidden 3
-  { count: 4, x: 4.2, color: "#c792ea" }, // output
+  { count: 7, x: -4.6, color: "#ff6b6b", zSpread: 3.2 }, // input
+  { count: 11, x: -2.3, color: "#ffcb6b", zSpread: 3.8 }, // hidden 1
+  { count: 9, x: 0, color: "#ffcb6b", zSpread: 4.0 }, // hidden 2
+  { count: 7, x: 2.3, color: "#89ddff", zSpread: 3.8 }, // hidden 3
+  { count: 4, x: 4.6, color: "#c792ea", zSpread: 2.8 }, // output
 ];
-
-const SPREAD = 2.6; // vertical spread of nodes within a layer
 
 function layerNodes(layer: LayerDef) {
   const pts: THREE.Vector3[] = [];
   const n = layer.count;
   for (let i = 0; i < n; i++) {
-    const y = n === 1 ? 0 : (i / (n - 1) - 0.5) * SPREAD;
-    pts.push(new THREE.Vector3(layer.x, y, 0));
+    const y = n === 1 ? 0 : (i / (n - 1) - 0.5) * 2.8;
+    // spread nodes across Z so each layer is a 2D grid, not a line
+    const z = (Math.random() - 0.5) * layer.zSpread;
+    pts.push(new THREE.Vector3(layer.x, y, z));
   }
   return pts;
 }
 
 function NetworkNodes() {
-  // Build all node positions
   const allNodes = useMemo(() => LAYERS.map(layerNodes), []);
 
-  // Connection list: [fromVec, toVec] pairs between consecutive layers
   const connections = useMemo(() => {
     const conns: [THREE.Vector3, THREE.Vector3, string][] = [];
     for (let li = 0; li < allNodes.length - 1; li++) {
@@ -46,12 +45,9 @@ function NetworkNodes() {
       const b = allNodes[li + 1];
       for (const pa of a) {
         for (const pb of b) {
-          // subtle z-offset per connection for depth
-          const zA = pa.z + (Math.random() - 0.5) * 0.15;
-          const zB = pb.z + (Math.random() - 0.5) * 0.15;
           conns.push([
-            new THREE.Vector3(pa.x, pa.y, zA),
-            new THREE.Vector3(pb.x, pb.y, zB),
+            pa.clone(),
+            pb.clone(),
             LAYERS[li + 1].color,
           ]);
         }
@@ -93,20 +89,20 @@ function Node({
     if (!ref.current) return;
     const t = state.clock.elapsedTime;
     const pulse = 0.5 + 0.5 * Math.sin(t * 1.6 + index * 0.7 + position.x);
-    const s = 0.085 + pulse * 0.03;
+    const s = 0.11 + pulse * 0.04;
     ref.current.scale.setScalar(s);
     const mat = ref.current.material as THREE.MeshStandardMaterial;
-    mat.emissiveIntensity = 0.7 + pulse * 0.8;
+    mat.emissiveIntensity = 0.8 + pulse * 0.9;
   });
   return (
     <mesh ref={ref} position={position}>
-      <sphereGeometry args={[1, 16, 16]} />
+      <sphereGeometry args={[1, 18, 18]} />
       <meshStandardMaterial
         color={color}
         emissive={color}
         emissiveIntensity={1}
-        roughness={0.3}
-        metalness={0.2}
+        roughness={0.25}
+        metalness={0.3}
       />
     </mesh>
   );
@@ -125,29 +121,29 @@ function Connection({
     <Line
       points={[from, to]}
       color={color}
-      lineWidth={0.6}
+      lineWidth={0.5}
       transparent
-      opacity={0.16}
+      opacity={0.12}
     />
   );
 }
 
-/** Small spheres that travel along a rotating subset of connections (signal flow). */
+/** Small spheres travelling along connections — the signal flow. */
 function Pulses({
   connections,
 }: {
   connections: [THREE.Vector3, THREE.Vector3, string][];
 }) {
-  const groupRef = useRef<THREE.Group>(null);
-  const PULSE_COUNT = 22;
+  const PULSE_COUNT = 26;
   const pulseData = useMemo(() => {
     const arr: { conn: number; speed: number; offset: number; color: string }[] = [];
     for (let i = 0; i < PULSE_COUNT; i++) {
+      const ci = Math.floor(Math.random() * connections.length);
       arr.push({
-        conn: Math.floor(Math.random() * connections.length),
-        speed: 0.35 + Math.random() * 0.55,
+        conn: ci,
+        speed: 0.3 + Math.random() * 0.5,
         offset: Math.random(),
-        color: connections[Math.floor(Math.random() * connections.length)][2],
+        color: connections[ci][2],
       });
     }
     return arr;
@@ -161,17 +157,16 @@ function Pulses({
       const mesh = meshes.current[i];
       if (!mesh) return;
       const [from, to] = connections[pd.conn];
-      const prog = ((t * pd.speed + pd.offset) % 1);
-      const eased = prog; // linear travel
-      mesh.position.lerpVectors(from, to, eased);
-      const fade = Math.sin(prog * Math.PI); // bright in the middle
+      const prog = (t * pd.speed + pd.offset) % 1;
+      mesh.position.lerpVectors(from, to, prog);
+      const fade = Math.sin(prog * Math.PI);
       const mat = mesh.material as THREE.MeshBasicMaterial;
-      mat.opacity = fade * 0.9;
+      mat.opacity = fade * 0.95;
     });
   });
 
   return (
-    <group ref={groupRef}>
+    <group>
       {pulseData.map((pd, i) => (
         <mesh
           key={i}
@@ -179,7 +174,7 @@ function Pulses({
             meshes.current[i] = m;
           }}
         >
-          <sphereGeometry args={[0.055, 8, 8]} />
+          <sphereGeometry args={[0.06, 8, 8]} />
           <meshBasicMaterial color={pd.color} transparent opacity={0.8} />
         </mesh>
       ))}
@@ -187,32 +182,35 @@ function Pulses({
   );
 }
 
-function Rig() {
-  useFrame((state) => {
-    // gentle auto-rotation of the whole scene
-    state.scene.rotation.y =
-      Math.sin(state.clock.elapsedTime * 0.12) * 0.18;
-    state.scene.rotation.x =
-      Math.sin(state.clock.elapsedTime * 0.08) * 0.06;
+/** Continuous rotation of the whole network so its 3D depth is obvious. */
+function SpinGroup({ children }: { children: React.ReactNode }) {
+  const ref = useRef<THREE.Group>(null);
+  useFrame((state, delta) => {
+    if (!ref.current) return;
+    // steady Y rotation + a constant base tilt so depth reads even at rest
+    ref.current.rotation.y += delta * 0.3;
+    ref.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.25) * 0.12 + 0.32;
   });
-  return null;
+  return <group ref={ref}>{children}</group>;
 }
 
 export default function NeuralNetwork() {
   return (
     <Canvas
-      camera={{ position: [0, 0, 8.5], fov: 45 }}
+      camera={{ position: [3.5, 1.8, 8.5], fov: 50 }}
       dpr={[1, 2]}
       gl={{ antialias: true, alpha: true }}
       style={{ background: "transparent" }}
     >
-      <ambientLight intensity={0.5} />
-      <pointLight position={[6, 4, 6]} intensity={1.1} color="#ff6b6b" />
-      <pointLight position={[-6, -4, 4]} intensity={0.8} color="#89ddff" />
-      <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.4}>
-        <NetworkNodes />
+      <ambientLight intensity={0.55} />
+      <pointLight position={[6, 4, 6]} intensity={1.2} color="#ff6b6b" />
+      <pointLight position={[-6, -4, 4]} intensity={0.9} color="#89ddff" />
+      <pointLight position={[0, 0, 8]} intensity={0.5} color="#c792ea" />
+      <Float speed={1.0} rotationIntensity={0.1} floatIntensity={0.3}>
+        <SpinGroup>
+          <NetworkNodes />
+        </SpinGroup>
       </Float>
-      <Rig />
     </Canvas>
   );
 }

@@ -15,7 +15,7 @@ export function Results() {
 
   return (
     <section id="results" className="relative py-24 sm:py-32">
-      <div className="absolute inset-0 grid-bg opacity-30" />
+      <div className="absolute inset-0 grid-bg opacity-20" />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeading
           index="07 · CONCLUSION"

@@ -57,7 +57,7 @@ function Donut() {
 export function Dataset() {
   return (
     <section id="dataset" className="relative py-24 sm:py-32">
-      <div className="absolute inset-0 grid-bg opacity-30" />
+      <div className="absolute inset-0 grid-bg opacity-20" />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeading
           index="02 · DATA"
@@ -167,7 +167,7 @@ export function Dataset() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
                     {/* scan line */}
-                    <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-coral/30 to-transparent animate-scan-line pointer-events-none" />
+                    <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-coral/20 to-transparent animate-scan-line pointer-events-none" />
                     <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
                       <div>
                         <div className="text-lg font-bold leading-tight" style={{ color: c.accent }}>

@@ -75,3 +75,46 @@ Stage Summary:
 - New "Neural Vision" section (top of page, right after hero) displays a 3D futuristic brain (wireframe shell + glowing neurons + firing synapses)
 - Both 3D models use the coral/amber/cyan/purple palette on the indigo base
 - Lint: clean; dev server: 200 responses, no errors
+
+---
+Task ID: 3
+Agent: main (Z.ai Code)
+Task: Make the neural network genuinely 3D (not flat), improve the brain 3D model, add rotation animation to both, selectively reduce opacity, and add 3D effects to the flowcharts.
+
+Work Log:
+- Rewrote `src/components/three/neural-network.tsx` for true 3D:
+  - Increased Z-spread per layer (2.8–4.0) so nodes occupy real depth
+  - Moved camera off-axis to [3.5, 1.8, 8.5] (was [0,0,9]) for visible perspective
+  - Added constant base X-tilt (0.32 rad) + faster Y rotation (0.3 rad/s) in SpinGroup so depth reads even at rest and rotation is clearly visible
+  - Node spheres now larger (0.11) with stronger emissive pulsing
+- Improved `src/components/three/futuristic-brain.tsx`:
+  - Better two-lobe geometry: cleaner longitudinal fissure pinch + layered gyral sin-noise wrinkles
+  - Solid brain body (55% opacity, emissive coral 0.18, metalness 0.45) + faint cyan wireframe overlay (0.1)
+  - 110 glowing surface neurons (was 90), 16 synapse arcs (was 14)
+  - Continuous Y rotation (0.18 rad/s) + X wobble via BrainSpin group
+  - Two orbit rings (coral + cyan, opposite directions) for depth context
+- Added 3D effects to pipeline flowchart (`pipeline.tsx`):
+  - Perspective container (perspective: 1100px) + preserve-3d
+  - Whole grid tilted rotateX(8deg)
+  - Nodes now 3D spheres: radial-gradient fills, inner shadow (depth), outer colored drop shadow, glossy white highlight, ground shadow
+  - Hover interaction: rotateY(25)/rotateX(-10)/scale via Framer Motion
+  - Labels translated translateZ(20px) for parallax depth
+  - Mobile nodes also upgraded to 3D sphere gradients
+- Selectively reduced opacity on dense overlays (NOT on cards/content):
+  - Hero grid-bg opacity-60 → opacity-40
+  - Hero text-side gradient via-background/70 → via-background/45 (lets neural net show through)
+  - Section grid-bg overlays (training/dataset/results/neural-vision) opacity-30 → opacity-20
+  - Dataset MRI scan-line from-coral/30 → from-coral/20
+- Verified with Agent Browser + VLM:
+  - Neural network: VLM confirms "clear sense of 3D perspective and depth" with nodes at varying sizes ✓
+  - Brain: VLM confirms "solid 3D shape resembling two lobes with wrinkled surface, glowing dots, visible depth" ✓
+  - Pipeline: VLM confirms "3D spheres with glossy highlights, depth, drop shadows, perspective tilt" ✓
+  - Lint clean, no console/page errors
+
+Stage Summary:
+- Neural network is now genuinely 3D: off-axis camera, Z-spread nodes, constant tilt + continuous rotation
+- Brain model is a solid two-lobe 3D shape with gyral wrinkles, glowing neurons, firing synapses, continuous rotation, dual orbit rings
+- Both 3D models rotate in place continuously
+- Pipeline flowchart nodes are now 3D spheres with perspective tilt + hover 3D rotation
+- Opacity selectively reduced only on background grid/gradient overlays (not content cards)
+- Lint: clean; dev server: 200 responses, no errors

@@ -16,14 +16,14 @@ export function Hero() {
       className="relative min-h-screen flex items-center overflow-hidden pt-16"
     >
       {/* grid + radial backdrop */}
-      <div className="absolute inset-0 grid-bg opacity-60" />
+      <div className="absolute inset-0 grid-bg opacity-40" />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
 
       {/* 3D neural network — right side on desktop, behind text on mobile */}
       <div className="absolute inset-0 lg:right-0 lg:left-1/2">
         <NeuralNetwork />
       </div>
-      <div className="absolute inset-0 lg:bg-gradient-to-r lg:from-background lg:via-background/70 lg:to-transparent" />
+      <div className="absolute inset-0 lg:bg-gradient-to-r lg:from-background lg:via-background/45 lg:to-transparent" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 w-full">
         <div className="max-w-2xl">
