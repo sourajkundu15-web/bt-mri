@@ -1,0 +1,523 @@
+---
+---
+
+<section id="overview">
+  <div class="grid-bg-overlay"></div>
+  <div class="hero-gradient"></div>
+
+  <!-- Large Background Watermark -->
+  <div class="bg-watermark font-mono">VGG19</div>
+
+  <!-- 3D Luminous Brain + Neural Network Background (Full Width) -->
+  <div class="hero-3d" id="hero-canvas-container"></div>
+  <div class="hero-3d-fade"></div>
+
+  <div class="container hero-content">
+    <div class="hero-text">
+      <div class="hero-title-group" data-animate>
+        <h1 class="hero-title">
+          Brain Tumor<br/>
+          <span class="text-gradient-coral">Classification</span>
+        </h1>
+        <span class="hero-subtitle">from T1 MRI Scans</span>
+      </div>
+
+      <p class="hero-desc" data-animate>
+        Fine-tuning a VGG19 transfer-learning backbone on
+        <strong>7,023 T1-weighted MRI scans</strong> to classify four tumor types — reaching
+        clinical-grade precision without training a network from scratch.
+      </p>
+
+      <div class="hero-stats" data-animate>
+        <div class="stat-card glass">
+          <div class="stat-value" style="color: var(--accent)">94.73%</div>
+          <div class="stat-label">Validation Acc</div>
+        </div>
+        <div class="stat-card glass">
+          <div class="stat-value" style="color: var(--accent)">99.26%</div>
+          <div class="stat-label">Validation AUC</div>
+        </div>
+        <div class="stat-card glass">
+          <div class="stat-value" style="color: var(--accent)">7,023</div>
+          <div class="stat-label">MRI Scans</div>
+        </div>
+        <div class="stat-card glass">
+          <div class="stat-value" style="color: var(--accent)">4</div>
+          <div class="stat-label">Tumor Classes</div>
+        </div>
+      </div>
+
+      <div class="hero-cta" data-animate>
+        <a href="#problem" class="cta-button">
+          Explore the study
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+        </a>
+        <span class="cta-label font-mono">VGG19 TRANSFER LEARNING · BT-MRI DATASET</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  section {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    padding-top: 64px;
+  }
+
+  .bg-watermark {
+    position: absolute;
+    bottom: 5%;
+    left: 2%;
+    font-size: 16vw;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.015);
+    line-height: 1;
+    letter-spacing: -0.05em;
+    pointer-events: none;
+    user-select: none;
+    z-index: 1;
+    text-transform: uppercase;
+  }
+
+  .grid-bg-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(204, 255, 0, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(204, 255, 0, 0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.5;
+  }
+
+  .hero-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 60%, var(--bg));
+  }
+
+  /* Full screen width to cover background with neural net and brain on far right */
+  .hero-3d {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero-3d-fade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, var(--bg) 0%, rgba(10,10,11,0.4) 30%, transparent 75%);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+  }
+
+  .hero-text {
+    max-width: 620px;
+  }
+
+  .hero-title-group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+  }
+
+  .hero-title {
+    font-family: var(--font-display-geom);
+    font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+  }
+
+  .hero-subtitle {
+    font-family: var(--font-display-wide);
+    font-size: clamp(1rem, 2.5vw, 1.6rem);
+    color: var(--text-secondary);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  .hero-desc {
+    margin-top: 24px;
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 540px;
+  }
+
+  .hero-desc strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .hero-stats {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  @media (min-width: 640px) {
+    .hero-stats {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .hero-cta {
+    margin-top: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #000;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: all var(--transition-base);
+  }
+
+  .cta-button:hover {
+    background: #e6ff66;
+    transform: translateY(-1px);
+  }
+
+  .cta-label {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 1024px) {
+    .hero-3d {
+      opacity: 0.35;
+    }
+  }
+</style>
+
+<script>
+  import * as THREE from 'three';
+
+  function initHeroCanvas() {
+    const container = document.getElementById('hero-canvas-container');
+    if (!container) return;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
+    camera.position.z = 8.5;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    // Parent group for mouse parallax
+    const mainGroup = new THREE.Group();
+    scene.add(mainGroup);
+
+    // ==========================================
+    // 1. NEURAL NETWORK BACKGROUND (SPREAD WIDER)
+    // ==========================================
+    const nodeGroup = new THREE.Group();
+    nodeGroup.position.set(-1.0, 0, -2.5); 
+    nodeGroup.scale.set(1.9, 1.8, 1.8); 
+    mainGroup.add(nodeGroup);
+
+    const layers = [
+      { count: 8, x: -4.5, spread: 3.2 },
+      { count: 12, x: -2.2, spread: 3.8 },
+      { count: 15, x: 0.0, spread: 4.2 },
+      { count: 12, x: 2.2, spread: 3.8 },
+      { count: 8, x: 4.5, spread: 3.0 },
+    ];
+
+    const allNodes: THREE.Vector3[] = [];
+    const nodeMeshes: THREE.Mesh[] = [];
+
+    layers.forEach(layer => {
+      for (let i = 0; i < layer.count; i++) {
+        const y = (i - (layer.count - 1) / 2) * (layer.spread / layer.count * 2);
+        const z = (Math.random() - 0.5) * 2.5;
+        const pos = new THREE.Vector3(layer.x, y, z);
+        allNodes.push(pos);
+
+        const geometry = new THREE.SphereGeometry(0.045, 8, 8);
+        const material = new THREE.MeshBasicMaterial({ color: 0xccff00, transparent: true, opacity: 0.4 });
+        const sphere = new THREE.Mesh(geometry, material);
+        sphere.position.copy(pos);
+        nodeMeshes.push(sphere);
+        nodeGroup.add(sphere);
+      }
+    });
+
+    const linesMaterial = new THREE.LineBasicMaterial({ color: 0xccff00, transparent: true, opacity: 0.04 });
+    let nodeIndex = 0;
+
+    for (let l = 0; l < layers.length - 1; l++) {
+      const currentLayerStart = nodeIndex;
+      const currentLayerEnd = nodeIndex + layers[l].count;
+      const nextLayerStart = currentLayerEnd;
+      const nextLayerEnd = nextLayerStart + layers[l + 1].count;
+
+      for (let i = currentLayerStart; i < currentLayerEnd; i++) {
+        for (let j = nextLayerStart; j < nextLayerEnd; j++) {
+          if (Math.random() > 0.48) continue;
+          const points = [allNodes[i], allNodes[j]];
+          const geometry = new THREE.BufferGeometry().setFromPoints(points);
+          const line = new THREE.Line(geometry, linesMaterial);
+          nodeGroup.add(line);
+        }
+      }
+      nodeIndex += layers[l].count;
+    }
+
+    // ==========================================
+    // 2. ROTATING 3D BRAIN MESH (SHIFTED FURTHER RIGHT)
+    // ==========================================
+    const brainGroup = new THREE.Group();
+    brainGroup.position.set(5.1, 0, 0.5); 
+    brainGroup.scale.set(0.95, 0.95, 0.95);
+    mainGroup.add(brainGroup);
+
+    const cerebrumGeometry = new THREE.SphereGeometry(1.4, 45, 45);
+    const posAttr = cerebrumGeometry.attributes.position;
+    
+    for (let i = 0; i < posAttr.count; i++) {
+      const x = posAttr.getX(i);
+      const y = posAttr.getY(i);
+      const z = posAttr.getZ(i);
+
+      const r = Math.sqrt(x*x + y*y + z*z);
+      const phi = Math.acos(y / r);
+      const theta = Math.atan2(z, x);
+
+      const gyrus = 0.16 * Math.sin(theta * 7) * Math.cos(phi * 7);
+      const sulcus = 0.05 * Math.sin(theta * 18) * Math.sin(phi * 18);
+      const displacement = gyrus + sulcus;
+      const newR = r + displacement;
+
+      let newX = newR * 1.15 * Math.sin(phi) * Math.cos(theta);
+      let newY = newR * 0.9 * Math.cos(phi);
+      let newZ = newR * 1.35 * Math.sin(phi) * Math.sin(theta);
+
+      const hemiGap = 0.08;
+      if (newX > 0) newX += hemiGap;
+      else newX -= hemiGap;
+
+      if (newY < -0.7) newY *= 0.8;
+
+      posAttr.setXYZ(i, newX, newY, newZ);
+    }
+    
+    cerebrumGeometry.computeVertexNormals();
+
+    const cerebrumFillMat = new THREE.MeshBasicMaterial({
+      color: 0xccff00,
+      transparent: true,
+      opacity: 0.05,
+      side: THREE.DoubleSide
+    });
+    const cerebrumFillMesh = new THREE.Mesh(cerebrumGeometry, cerebrumFillMat);
+    brainGroup.add(cerebrumFillMesh);
+
+    const cerebrumWireMat = new THREE.MeshBasicMaterial({
+      color: 0xccff00,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.32
+    });
+    const cerebrumWireMesh = new THREE.Mesh(cerebrumGeometry, cerebrumWireMat);
+    brainGroup.add(cerebrumWireMesh);
+
+    const cerebrumEdges = new THREE.EdgesGeometry(cerebrumGeometry);
+    const cerebrumEdgeMat = new THREE.LineBasicMaterial({
+      color: 0xccff00,
+      transparent: true,
+      opacity: 0.5
+    });
+    const cerebrumEdgeLines = new THREE.LineSegments(cerebrumEdges, cerebrumEdgeMat);
+    brainGroup.add(cerebrumEdgeLines);
+
+    // Cerebellum
+    const cerebellumGeometry = new THREE.SphereGeometry(0.75, 30, 30);
+    const cbPosAttr = cerebellumGeometry.attributes.position;
+
+    for (let i = 0; i < cbPosAttr.count; i++) {
+      const x = cbPosAttr.getX(i);
+      const y = cbPosAttr.getY(i);
+      const z = cbPosAttr.getZ(i);
+
+      const r = Math.sqrt(x*x + y*y + z*z);
+      const phi = Math.acos(y / r);
+      const theta = Math.atan2(z, x);
+
+      const striations = 0.035 * Math.sin(phi * 36);
+      const newR = r + striations;
+
+      const newX = newR * 0.95 * Math.sin(phi) * Math.cos(theta);
+      const newY = newR * 0.6 * Math.cos(phi) - 0.85; 
+      const newZ = newR * 0.95 * Math.sin(phi) * Math.sin(theta) - 0.9;
+
+      cbPosAttr.setXYZ(i, newX, newY, newZ);
+    }
+
+    cerebellumGeometry.computeVertexNormals();
+
+    const cerebellumWireMat = new THREE.MeshBasicMaterial({
+      color: 0xa2e600,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.28
+    });
+    const cerebellumWireMesh = new THREE.Mesh(cerebellumGeometry, cerebellumWireMat);
+    brainGroup.add(cerebellumWireMesh);
+
+    const cerebellumEdgeMat = new THREE.LineBasicMaterial({
+      color: 0xa2e600,
+      transparent: true,
+      opacity: 0.4
+    });
+    const cerebellumEdges = new THREE.EdgesGeometry(cerebellumGeometry);
+    const cerebellumEdgeLines = new THREE.LineSegments(cerebellumEdges, cerebellumEdgeMat);
+    brainGroup.add(cerebellumEdgeLines);
+
+    // Brainstem Lines
+    const numStemLines = 18;
+    const stemLineSegments = 12;
+    const stemRadius = 0.22;
+
+    for (let l = 0; l < numStemLines; l++) {
+      const angle = (l / numStemLines) * Math.PI * 2;
+      const startX = stemRadius * Math.cos(angle);
+      const startZ = stemRadius * Math.sin(angle) - 0.45;
+
+      const linePoints: THREE.Vector3[] = [];
+      for (let s = 0; s < stemLineSegments; s++) {
+        const t = s / (stemLineSegments - 1);
+        const y = -0.75 - t * 1.3; 
+        const currentRadius = stemRadius * (1.0 - t * 0.45);
+        const x = currentRadius * Math.cos(angle) + Math.sin(y * 4) * 0.04;
+        const z = currentRadius * Math.sin(angle) - 0.45 + Math.cos(y * 4) * 0.04;
+        linePoints.push(new THREE.Vector3(x, y, z));
+      }
+      const lineGeom = new THREE.BufferGeometry().setFromPoints(linePoints);
+      const lineMat = new THREE.LineBasicMaterial({
+        color: 0xccff00,
+        transparent: true,
+        opacity: 0.3
+      });
+      const line = new THREE.Line(lineGeom, lineMat);
+      brainGroup.add(line);
+    }
+
+    // Internal Fiber Tracts
+    const fiberCount = 35;
+    for (let f = 0; f < fiberCount; f++) {
+      const startY = -0.9 - Math.random() * 0.3;
+      const startX = (Math.random() - 0.5) * 0.12;
+      const startZ = -0.45 + (Math.random() - 0.5) * 0.12;
+
+      const isLeft = Math.random() > 0.5;
+      const targetX = (isLeft ? -1 : 1) * (0.4 + Math.random() * 0.9);
+      const targetY = (Math.random() - 0.2) * 1.1;
+      const targetZ = (Math.random() - 0.5) * 1.1;
+
+      const controlX = startX + (targetX - startX) * 0.3;
+      const controlY = startY + (targetY - startY) * 0.85 + 0.3;
+      const controlZ = startZ + (targetZ - startZ) * 0.3;
+
+      const curve = new THREE.QuadraticBezierCurve3(
+        new THREE.Vector3(startX, startY, startZ),
+        new THREE.Vector3(controlX, controlY, controlZ),
+        new THREE.Vector3(targetX, targetY, targetZ)
+      );
+
+      const pointsOnCurve = curve.getPoints(18);
+      const fiberGeom = new THREE.BufferGeometry().setFromPoints(pointsOnCurve);
+      
+      const fiberColor = Math.random() > 0.4 ? 0xccff00 : 0x89ddff;
+      const fiberMat = new THREE.LineBasicMaterial({
+        color: fiberColor,
+        transparent: true,
+        opacity: 0.25
+      });
+      const fiber = new THREE.Line(fiberGeom, fiberMat);
+      brainGroup.add(fiber);
+    }
+
+    // ==========================================
+    // ANIMATION & INTERACTION
+    // ==========================================
+    let mouseX = 0, mouseY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+    });
+
+    function updateBrainPosition() {
+      const aspect = container.clientWidth / container.clientHeight;
+      const brainX = Math.min(5.3, aspect * 3.4); 
+      brainGroup.position.x = brainX;
+    }
+    window.addEventListener('resize', updateBrainPosition);
+    updateBrainPosition();
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // 1. Neural Net background rotation
+      nodeGroup.rotation.y -= 0.0012;
+      nodeGroup.rotation.x -= 0.0003;
+
+      // 2. 3D Brain Mesh spin
+      brainGroup.rotation.y += 0.0035;
+
+      // 3. Mouse Parallax (applied to main group parent)
+      mainGroup.rotation.y += (mouseX * 0.22 - mainGroup.rotation.y) * 0.02;
+      mainGroup.rotation.x += (-mouseY * 0.12 - mainGroup.rotation.x) * 0.02;
+
+      // 4. Float node animations
+      nodeMeshes.forEach((mesh, i) => {
+        mesh.position.y += Math.sin(Date.now() * 0.001 + i * 0.5) * 0.00015;
+      });
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHeroCanvas);
+  } else {
+    initHeroCanvas();
+  }
+</script>

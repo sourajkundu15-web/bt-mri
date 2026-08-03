@@ -1,0 +1,234 @@
+---
+const firstEpochs = [
+  { epoch: 1, acc: '46.05%', loss: '1.1572', prec: '88.63%', rec: '15.89%', valAcc: '62.44%', valLoss: '1.0037', valPrec: '73.13%', valRec: '37.94%' },
+  { epoch: 2, acc: '67.53%', loss: '0.8007', prec: '75.51%', rec: '56.12%', valAcc: '69.88%', valLoss: '0.7829', valPrec: '76.48%', valRec: '59.56%' },
+  { epoch: 3, acc: '72.70%', loss: '0.6857', prec: '77.22%', rec: '65.51%', valAcc: '72.69%', valLoss: '0.6769', valPrec: '77.58%', valRec: '67.25%' },
+  { epoch: 4, acc: '74.87%', loss: '0.6269', prec: '78.48%', rec: '69.44%', valAcc: '75.81%', valLoss: '0.6276', valPrec: '79.04%', valRec: '69.31%' },
+  { epoch: 5, acc: '76.37%', loss: '0.5880', prec: '79.32%', rec: '71.17%', valAcc: '71.50%', valLoss: '0.6625', valPrec: '74.98%', valRec: '68.00%' },
+];
+
+const lastEpochs = [
+  { epoch: 96, acc: '100.00%', loss: '0.0016', prec: '100.00%', rec: '100.00%', valAcc: '93.62%', valLoss: '0.2139', valPrec: '93.74%', valRec: '93.62%' },
+  { epoch: 97, acc: '100.00%', loss: '0.0021', prec: '100.00%', rec: '100.00%', valAcc: '94.81%', valLoss: '0.1812', valPrec: '94.81%', valRec: '94.75%' },
+  { epoch: 98, acc: '100.00%', loss: '0.0017', prec: '100.00%', rec: '100.00%', valAcc: '95.00%', valLoss: '0.1926', valPrec: '95.12%', valRec: '94.94%' },
+  { epoch: 99, acc: '100.00%', loss: '0.0014', prec: '100.00%', rec: '100.00%', valAcc: '95.00%', valLoss: '0.1884', valPrec: '95.12%', valRec: '95.00%' },
+  { epoch: 100, acc: '100.00%', loss: '0.0013', prec: '100.00%', rec: '100.00%', valAcc: '94.75%', valLoss: '0.1897', valPrec: '94.81%', valRec: '94.69%' },
+];
+---
+
+<section id="epochs" class="epochs-section">
+  <!-- Plus Corner Markers -->
+  <div class="section-corner-marker marker-tl">+</div>
+  <div class="section-corner-marker marker-tr">+</div>
+  <div class="section-corner-marker marker-bl">+</div>
+  <div class="section-corner-marker marker-br">+</div>
+
+  <!-- Background Watermark -->
+  <div class="bg-watermark-right">EPOCHS</div>
+
+  <div class="container">
+    <div class="section-header" data-animate>
+      <div class="section-label">
+        <span class="number">05.1 · HISTORY</span>
+        <span class="line"></span>
+        <span class="tag">Epoch Logs</span>
+      </div>
+      <h2 class="section-title text-gradient-coral">First & last 5 epochs comparative analysis</h2>
+      <p class="section-desc">
+        By extracting the training loop logs, we can observe the exact transition of learning performance from initialization (epochs 1-5) to full convergence (epochs 96-100).
+      </p>
+    </div>
+
+    <!-- Side-by-side comparative epoch tables -->
+    <div class="epochs-grid" data-animate>
+      <!-- First 5 Epochs -->
+      <div class="epoch-table-card glass">
+        <div class="section-corner-marker marker-tl">+</div>
+        <div class="section-corner-marker marker-br">+</div>
+        <div class="epoch-card-header">
+          <span class="epoch-badge font-mono" style="color: var(--amber); border-color: rgba(255, 203, 107, 0.25); background: rgba(255, 203, 107, 0.1);">INITIALIZATION</span>
+          <h3>First 5 Epochs</h3>
+        </div>
+        <div class="table-scroll">
+          <table class="data-table epoch-table">
+            <thead>
+              <tr>
+                <th>EP</th>
+                <th>LOSS</th>
+                <th>ACC</th>
+                <th>VAL LOSS</th>
+                <th>VAL ACC</th>
+              </tr>
+            </thead>
+            <tbody>
+              {firstEpochs.map(e => (
+                <tr>
+                  <td class="td-name">#{e.epoch}</td>
+                  <td class="td-params">{e.loss}</td>
+                  <td class="td-dim">{e.acc}</td>
+                  <td style="color: var(--text-muted)">{e.valLoss}</td>
+                  <td style="color: var(--accent); font-weight: 700;">{e.valAcc}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Last 5 Epochs -->
+      <div class="epoch-table-card glass">
+        <div class="section-corner-marker marker-tr">+</div>
+        <div class="section-corner-marker marker-bl">+</div>
+        <div class="epoch-card-header">
+          <span class="epoch-badge font-mono" style="color: var(--accent); border-color: var(--accent-border); background: var(--accent-dim);">CONVERGENCE</span>
+          <h3>Last 5 Epochs</h3>
+        </div>
+        <div class="table-scroll">
+          <table class="data-table epoch-table">
+            <thead>
+              <tr>
+                <th>EP</th>
+                <th>LOSS</th>
+                <th>ACC</th>
+                <th>VAL LOSS</th>
+                <th>VAL ACC</th>
+              </tr>
+            </thead>
+            <tbody>
+              {lastEpochs.map(e => (
+                <tr>
+                  <td class="td-name">#{e.epoch}</td>
+                  <td class="td-params">{e.loss}</td>
+                  <td class="td-dim">{e.acc}</td>
+                  <td style="color: var(--text-muted)">{e.valLoss}</td>
+                  <td style="color: var(--accent); font-weight: 700;">{e.valAcc}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comparative curves and Detailed Analysis -->
+    <div class="analysis-box glass-strong" data-animate>
+      <div class="section-corner-marker marker-tl">+</div>
+      <div class="section-corner-marker marker-br">+</div>
+      <div class="analysis-header-title font-mono">TRAINING RUN ANALYSIS</div>
+      <div class="analysis-text-grid">
+        <div class="analysis-col">
+          <h4>Initialization Phase (Epochs 1-5)</h4>
+          <p>
+            During the first five epochs, the classification head undergoes **rapid optimization**. 
+            Training loss drops by **56%** (from 1.1572 down to 0.5880), while accuracy rises from 46.05% to 76.37%. 
+            Validation metrics follow closely, showing that the frozen VGG19 features are highly discriminative 
+            for brain MRI characteristics even at initial stages.
+          </p>
+        </div>
+        <div class="analysis-col">
+          <h4>Convergence Phase (Epochs 96-100)</h4>
+          <p>
+            By the final epochs, training loss stabilizes at an extremely low **0.0013**, and training accuracy reaches 
+            **100.00%** (full memorization). However, validation accuracy plateaus at **94.75%** and validation loss 
+            settles at **0.1897**. This divergence indicates a standard overfitting boundary where further training 
+            runs do not yield generalization benefits.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .epochs-section {
+    position: relative;
+    padding: 96px 0 120px;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .section-header {
+    max-width: 720px;
+    margin-bottom: 48px;
+  }
+
+  .epochs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  @media (max-width: 768px) {
+    .epochs-grid { grid-template-columns: 1fr; }
+  }
+
+  .epoch-table-card {
+    padding: 24px;
+  }
+
+  .epoch-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 12px;
+  }
+
+  .epoch-card-header h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .epoch-badge {
+    font-size: 9px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+
+  .epoch-table th, .epoch-table td {
+    padding: 10px 14px;
+  }
+
+  .analysis-box {
+    padding: 32px;
+  }
+
+  .analysis-header-title {
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(204, 255, 0, 0.1);
+    padding-bottom: 8px;
+  }
+
+  .analysis-text-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+  }
+
+  @media (max-width: 768px) {
+    .analysis-text-grid { grid-template-columns: 1fr; gap: 20px; }
+  }
+
+  .analysis-col h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .analysis-col p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+</style>

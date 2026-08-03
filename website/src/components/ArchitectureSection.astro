@@ -1,0 +1,490 @@
+---
+const layers = [
+  { name: 'VGG19 (Functional)', shape: '(None, 7, 7, 512)', params: '20,024,384', state: 'frozen', color: 'var(--cyan)' },
+  { name: 'Flatten', shape: '(None, 25088)', params: '0', state: 'trainable', color: 'var(--accent)' },
+  { name: 'Dense (4096, ReLU)', shape: '(None, 4096)', params: '102,764,544', state: 'trainable', color: 'var(--accent)' },
+  { name: 'Dense (4096, ReLU)', shape: '(None, 4096)', params: '16,781,312', state: 'trainable', color: 'var(--accent)' },
+  { name: 'Dense (4, Softmax)', shape: '(None, 4)', params: '16,388', state: 'trainable', color: 'var(--accent)' },
+];
+
+const diagramLayers = [
+  { short: 'B1', title: 'Block 1', state: 'FROZEN', color: '#89ddff' },
+  { short: 'B2', title: 'Block 2', state: 'FROZEN', color: '#89ddff' },
+  { short: 'B3', title: 'Block 3', state: 'FROZEN', color: '#89ddff' },
+  { short: 'B4', title: 'Block 4', state: 'FROZEN', color: '#89ddff' },
+  { short: 'B5', title: 'Block 5', state: 'FROZEN', color: '#89ddff' },
+  { short: 'FLAT', title: 'Flatten', state: 'TRAINABLE', color: 'var(--accent)' },
+  { short: 'D1', title: 'Dense 1', state: 'TRAINABLE', color: 'var(--accent)' },
+  { short: 'D2', title: 'Dense 2', state: 'TRAINABLE', color: 'var(--accent)' },
+  { short: 'OUT', title: 'Softmax', state: 'TRAINABLE', color: 'var(--accent)' },
+];
+---
+
+<section id="architecture" style="position: relative; overflow: hidden;">
+  <!-- Plus Corner Markers -->
+  <div class="section-corner-marker marker-tl">+</div>
+  <div class="section-corner-marker marker-tr">+</div>
+  <div class="section-corner-marker marker-bl">+</div>
+  <div class="section-corner-marker marker-br">+</div>
+
+  <!-- Background Watermark -->
+  <div class="bg-watermark">MODEL</div>
+
+  <!-- Background design elements -->
+  <div class="dotted-grid"></div>
+  <div class="radial-blob-cyan" style="top: 15%; right: -10%; opacity: 0.8;"></div>
+  <div class="radial-blob" style="bottom: 10%; left: -10%; opacity: 0.6;"></div>
+
+  <div class="container">
+    <div class="section-header" data-animate>
+      <div class="section-label">
+        <span class="number">04 · MODEL</span>
+        <span class="line"></span>
+        <span class="tag">Architecture</span>
+      </div>
+      <h2 class="section-title text-gradient-coral">VGG19 backbone + a heavy custom head</h2>
+      <p class="section-desc">
+        The pretrained VGG19 convolutional base (20M params) is frozen. Only the flatten layer 
+        and two 4096-unit dense ReLU layers + a 4-unit softmax are trained — many weights 
+        come from flattening the 7×7×512 feature map into 25,088 inputs.
+      </p>
+    </div>
+
+    <!-- 3D Architecture Diagram matching the pipeline style (ENLARGED) -->
+    <div class="canvas-container" data-animate style="height: 520px; position: relative; margin-bottom: 24px;">
+      <div class="section-corner-marker marker-tl">+</div>
+      <div class="section-corner-marker marker-br">+</div>
+      <div class="grid-bg-inner" style="opacity:0.1"></div>
+      <div id="arch-canvas" style="position: absolute; inset: 0; width: 100%; height: 100%;"></div>
+      
+      <!-- HTML Labels Overlay for the Architecture slabs -->
+      <div class="canvas-labels-overlay">
+        {diagramLayers.map((layer, i) => (
+          <div class="stage-label-group arch-label" id={`arch-label-group-${i}`} data-layer={i}>
+            <div class="label-circle font-mono">{layer.short}</div>
+            <div class="label-title" style="font-size: 11px;">{layer.title}</div>
+            <div class="label-badge font-mono" style={`color: ${layer.color}; font-size: 8px;`}>{layer.state}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="arch-grid">
+      <!-- Code block -->
+      <div class="code-col" data-animate>
+        <div class="code-window">
+          <div class="section-corner-marker marker-tr">+</div>
+          <div class="code-header">
+            <div class="code-dots">
+              <span></span><span></span><span></span>
+            </div>
+            <span class="code-filename">model.py</span>
+            <span style="margin-left:auto;font-family:var(--font-mono);font-size:10px;color:var(--accent)">CELL 1</span>
+          </div>
+          <pre><code><span class="line-num"> 1</span><span>from tensorflow.keras.applications import VGG19</span>
+<span class="line-num"> 2</span><span>from tensorflow.keras.layers import Flatten, Dense</span>
+<span class="line-num"> 3</span><span>from tensorflow.keras.models import Sequential</span>
+<span class="line-num"> 4</span>
+<span class="line-num"> 5</span><span class="code-comment"># 1. Pretrained backbone — frozen</span>
+<span class="line-num"> 6</span><span>pretrained = VGG19(weights=<span class="code-string">None</span>,</span>
+<span class="line-num"> 7</span><span>                   include_top=<span class="code-string">False</span>,</span>
+<span class="line-num"> 8</span><span>                   input_shape=(<span class="code-string">224, 224, 3</span>))</span>
+<span class="line-num"> 9</span><span>for layer in pretrained.layers:</span>
+<span class="line-num">10</span><span>    layer.trainable = <span class="code-string">False</span></span>
+<span class="line-num">11</span>
+<span class="line-num">12</span><span class="code-comment"># 2. Custom classification head</span>
+<span class="line-num">13</span><span>model = Sequential([</span>
+<span class="line-num">14</span><span>    pretrained,</span>
+<span class="line-num">15</span><span>    Flatten(),</span>
+<span class="line-num">16</span><span>    Dense(<span class="code-string">4096</span>, activation=<span class="code-string">'relu'</span>),</span>
+<span class="line-num">17</span><span>    Dense(<span class="code-string">4096</span>, activation=<span class="code-string">'relu'</span>),</span>
+<span class="line-num">18</span><span>    Dense(<span class="code-string">4</span>, activation=<span class="code-string">'softmax'</span>),</span>
+<span class="line-num">19</span><span>])</span></code></pre>
+        </div>
+      </div>
+
+      <!-- Param stats -->
+      <div class="stats-col" data-animate>
+        <div class="param-card glass">
+          <div class="section-corner-marker marker-tr">+</div>
+          <div class="param-header">
+            <span class="param-label">Total params</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg>
+          </div>
+          <div class="param-value" style="color:var(--accent)">139.6<span class="param-unit">M</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:100%;background:var(--accent)"></div></div>
+        </div>
+
+        <div class="param-card glass">
+          <div class="section-corner-marker marker-tl">+</div>
+          <div class="param-header">
+            <span class="param-label">Trainable</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg>
+          </div>
+          <div class="param-value" style="color:var(--accent)">119.6<span class="param-unit">M</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:85.6%;background:var(--accent)"></div></div>
+        </div>
+
+        <div class="param-card glass">
+          <div class="section-corner-marker marker-br">+</div>
+          <div class="param-header">
+            <span class="param-label">Frozen</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg>
+          </div>
+          <div class="param-value" style="color:var(--cyan)">20.0<span class="param-unit">M</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:14.4%;background:var(--cyan)"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Layer table -->
+    <div class="table-wrap glass-strong" data-animate>
+      <div class="section-corner-marker marker-tl">+</div>
+      <div class="section-corner-marker marker-br">+</div>
+      <div class="table-header">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M12 20v2"/><path d="M12 2v2"/><path d="M17 20v2"/><path d="M17 2v2"/><path d="M2 12h2"/><path d="M2 17h2"/><path d="M2 7h2"/><path d="M20 12h2"/><path d="M20 17h2"/><path d="M20 7h2"/><path d="M7 20v2"/><path d="M7 2v2"/><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg>
+        <span style="font-weight:600;font-size:14px">Layer-by-layer topology</span>
+        <span class="font-mono" style="margin-left:auto;font-size:10px;color:var(--text-muted)">model.summary()</span>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Layer</th>
+              <th>Output shape</th>
+              <th>Params</th>
+              <th>State</th>
+            </tr>
+          </thead>
+          <tbody>
+            {layers.map(layer => (
+              <tr>
+                <td class="td-name">{layer.name}</td>
+                <td class="td-dim">{layer.shape}</td>
+                <td class="td-params">{layer.params}</td>
+                <td>
+                  <span class={`badge badge-${layer.state === 'frozen' ? 'frozen' : 'trainable'}`}>
+                    {layer.state === 'frozen' ? '❄ Frozen' : '🔥 Trainable'}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  section {
+    position: relative;
+    padding: 96px 0 120px;
+  }
+
+  .grid-bg-inner {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(204, 255, 0, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(204, 255, 0, 0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  .section-header {
+    max-width: 720px;
+    margin-bottom: 48px;
+  }
+
+  .canvas-labels-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    padding-top: 40px;
+    z-index: 10;
+  }
+
+  .stage-label-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    pointer-events: auto;
+  }
+
+  .label-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: rgba(18, 18, 20, 0.9);
+    display: grid;
+    place-items: center;
+    font-size: 10px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+
+  .label-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .label-badge {
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .arch-grid {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 1024px) {
+    .arch-grid { grid-template-columns: 1fr; }
+    .canvas-labels-overlay { display: none; }
+  }
+
+  .stats-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .param-card {
+    padding: 20px;
+  }
+
+  .param-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .param-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .param-value {
+    font-size: 2rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .param-unit {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-left: 4px;
+  }
+
+  .progress-bar {
+    margin-top: 12px;
+  }
+
+  .table-wrap {
+    margin-top: 32px;
+    overflow: hidden;
+  }
+
+  .table-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(204, 255, 0, 0.1);
+    background: rgba(204, 255, 0, 0.03);
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+  }
+</style>
+
+<script>
+  import * as THREE from 'three';
+
+  function initArchDiagram() {
+    const container = document.getElementById('arch-canvas');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    const scene = new THREE.Scene();
+    const w = container.clientWidth || 800;
+    const h = container.clientHeight || 520;
+    
+    const camera = new THREE.PerspectiveCamera(42, w / h, 0.1, 1000);
+    camera.position.set(0, 0, 11.8);
+    camera.lookAt(0, 0, 0);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(w, h);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    const group = new THREE.Group();
+
+    const blocks = [
+      { w: 0.58, h: 4.6, d: 2.2, x: -6.4, color: 0x89ddff },
+      { w: 0.58, h: 4.1, d: 2.0, x: -4.8, color: 0x89ddff },
+      { w: 0.58, h: 3.6, d: 1.8, x: -3.2, color: 0x89ddff },
+      { w: 0.58, h: 3.1, d: 1.5, x: -1.7, color: 0x89ddff },
+      { w: 0.58, h: 2.6, d: 1.2, x: -0.2, color: 0x89ddff },
+      // Flatten
+      { w: 0.30, h: 4.8, d: 0.5, x: 1.2, color: 0xccff00 },
+      // Dense 1 & 2
+      { w: 0.58, h: 3.8, d: 1.5, x: 2.6, color: 0xccff00 },
+      { w: 0.58, h: 3.3, d: 1.2, x: 4.0, color: 0xccff00 },
+      // Softmax
+      { w: 0.58, h: 2.3, d: 0.8, x: 5.4, color: 0xccff00 },
+    ];
+
+    const meshes: THREE.Group[] = [];
+
+    blocks.forEach((block, i) => {
+      const slabGroup = new THREE.Group();
+      slabGroup.position.x = block.x;
+      slabGroup.position.y = 0;
+
+      const geometry = new THREE.BoxGeometry(block.w, block.h, block.d);
+      
+      const edges = new THREE.EdgesGeometry(geometry);
+      const lineMat = new THREE.LineBasicMaterial({ color: block.color, transparent: true, opacity: 0.65 });
+      const wireframe = new THREE.LineSegments(edges, lineMat);
+      slabGroup.add(wireframe);
+
+      const faceMat = new THREE.MeshBasicMaterial({ color: block.color, transparent: true, opacity: 0.08 });
+      const solid = new THREE.Mesh(geometry, faceMat);
+      slabGroup.add(solid);
+
+      slabGroup.rotation.y = -0.32;
+      slabGroup.rotation.x = 0.08;
+
+      group.add(slabGroup);
+      meshes.push(slabGroup);
+    });
+
+    const lineMat = new THREE.LineBasicMaterial({ color: 0xccff00, transparent: true, opacity: 0.1 });
+    const nodesPerSlab = 8;
+    const slabNodes: THREE.Vector3[][] = [];
+
+    blocks.forEach((block, i) => {
+      const nodes: THREE.Vector3[] = [];
+      for (let n = 0; n < nodesPerSlab; n++) {
+        const y = (Math.random() - 0.5) * block.h * 0.9;
+        const z = (Math.random() - 0.5) * block.d * 0.9;
+        
+        const localPos = new THREE.Vector3(0, y, z);
+        localPos.applyAxisAngle(new THREE.Vector3(0, 1, 0), -0.32);
+        localPos.applyAxisAngle(new THREE.Vector3(1, 0, 0), 0.08);
+        localPos.x += block.x;
+        
+        nodes.push(localPos);
+      }
+      slabNodes.push(nodes);
+    });
+
+    for (let i = 0; i < blocks.length - 1; i++) {
+      const currentNodes = slabNodes[i];
+      const nextNodes = slabNodes[i + 1];
+      
+      currentNodes.forEach(cNode => {
+        nextNodes.forEach(nNode => {
+          if (Math.random() > 0.82) {
+            const points = [cNode, nNode];
+            const lineGeom = new THREE.BufferGeometry().setFromPoints(points);
+            const connection = new THREE.Line(lineGeom, lineMat);
+            group.add(connection);
+          }
+        });
+      });
+    }
+
+    const particleGroup = new THREE.Group();
+    const particleColors = [0xccff00, 0x89ddff, 0xffffff];
+    const particles: { mesh: THREE.Mesh, speed: number, offset: number }[] = [];
+
+    for (let i = 0; i < blocks.length - 1; i++) {
+      const startX = blocks[i].x;
+      const endX = blocks[i + 1].x;
+      
+      for (let p = 0; p < 2; p++) {
+        const geom = new THREE.SphereGeometry(0.06, 8, 8);
+        const col = particleColors[Math.floor(Math.random() * particleColors.length)];
+        const mat = new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.8 });
+        const mesh = new THREE.Mesh(geom, mat);
+        
+        const x = startX + (endX - startX) * (0.33 + p * 0.33);
+        const y = (Math.random() - 0.5) * blocks[i].h * 0.6;
+        const z = (Math.random() - 0.5) * blocks[i].d * 0.6;
+        mesh.position.set(x, y, z);
+        
+        particleGroup.add(mesh);
+        particles.push({
+          mesh,
+          speed: 0.3 + Math.random() * 0.4,
+          offset: Math.random() * 100
+        });
+      }
+    }
+    group.add(particleGroup);
+
+    scene.add(group);
+
+    let mouseX = 0, mouseY = 0;
+
+    container.addEventListener('mousemove', (e) => {
+      const rect = container.getBoundingClientRect();
+      if (!rect) return;
+      mouseX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+      mouseY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const time = Date.now() * 0.001;
+
+      meshes.forEach((mesh, i) => {
+        mesh.position.y = Math.sin(time * 0.8 + i * 0.5) * 0.06;
+      });
+
+      particles.forEach(p => {
+        p.mesh.position.y += Math.sin(time * p.speed + p.offset) * 0.003;
+      });
+
+      group.rotation.y += (mouseX * 0.18 - group.rotation.y) * 0.03;
+      group.rotation.x += (-mouseY * 0.08 - group.rotation.x) * 0.03;
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+      const newW = container.clientWidth;
+      const newH = container.clientHeight;
+      camera.aspect = newW / newH;
+      camera.updateProjectionMatrix();
+      renderer.setSize(newW, newH);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initArchDiagram);
+  } else {
+    setTimeout(initArchDiagram, 200);
+  }
+</script>

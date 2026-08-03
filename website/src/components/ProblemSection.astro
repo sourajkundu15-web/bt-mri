@@ -1,0 +1,224 @@
+---
+---
+
+<section id="problem">
+  <!-- Plus Corner Markers -->
+  <div class="section-corner-marker marker-tl">+</div>
+  <div class="section-corner-marker marker-tr">+</div>
+  <div class="section-corner-marker marker-bl">+</div>
+  <div class="section-corner-marker marker-br">+</div>
+
+  <!-- Background Watermark -->
+  <div class="bg-watermark-right">BRAIN</div>
+
+  <div class="container">
+    <div class="section-header" data-animate>
+      <div class="section-label">
+        <span class="number">01 · CONTEXT</span>
+        <span class="line"></span>
+        <span class="tag">Problem & Approach</span>
+      </div>
+      <h2 class="section-title text-gradient-coral">Manual review is slow, subjective, and scarce</h2>
+      <p class="section-desc">
+        Brain tumors are visually heterogeneous and radiologist review is time-consuming, 
+        reader-dependent, and limited by specialist availability in low-resource settings. 
+        An automated CNN classifier can pre-rank scans, flag high-confidence cases, and 
+        augment — not replace — clinical review.
+      </p>
+    </div>
+
+    <div class="problem-grid">
+      <!-- Bottleneck card -->
+      <div class="bottleneck-card glass" data-animate>
+        <!-- Corner Plus Markers inside glass card -->
+        <div class="section-corner-marker marker-tl">+</div>
+        <div class="section-corner-marker marker-br">+</div>
+
+        <div class="card-header">
+          <span class="card-icon danger">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+          </span>
+          <h3>The bottleneck</h3>
+        </div>
+        <p class="card-text">
+          We frame this as a 4-class image classification task on T1-weighted contrast MRI. 
+          The clinical goal is to surface the scans most likely to need urgent specialist 
+          attention — not to issue a diagnosis.
+        </p>
+        <ul class="pain-points">
+          <li><span class="dot"></span>Reader-dependent interpretation</li>
+          <li><span class="dot"></span>Long turnaround in low-resource settings</li>
+          <li><span class="dot"></span>Visually heterogeneous tumor morphology</li>
+        </ul>
+      </div>
+
+      <!-- Solution cards -->
+      <div class="solutions">
+        <div class="solution-card glass" data-animate>
+          <div class="section-corner-marker marker-tr">+</div>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10 20-1.25-2.5L6 18"/><path d="M10 4 8.75 6.5 6 6"/><path d="m14 20 1.25-2.5L18 18"/><path d="m14 4 1.25 2.5L18 6"/><path d="m17 21-3-6h-4"/><path d="m17 3-3 6 1.5 3"/><path d="M2 12h6.5L10 9"/><path d="m20 10-1.5 2 1.5 2"/><path d="M22 12h-6.5L14 15"/><path d="m4 10 1.5 2L4 14"/><path d="m7 21 3-6-1.5-3"/><path d="m7 3 3 6h4"/></svg>
+          <h4>Frozen backbone</h4>
+          <p>Reuse a deep ImageNet-pretrained VGG19 backbone for visual feature extraction. Backprop never touches the conv weights.</p>
+        </div>
+        <div class="solution-card glass" data-animate>
+          <div class="section-corner-marker marker-tl">+</div>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg>
+          <h4>Fresh dense head</h4>
+          <p>Train a task-specific head — 2× Dense(4096) + softmax — on brain MRI to learn tumor-specific decision boundaries.</p>
+        </div>
+        <div class="solution-card glass" data-animate>
+          <div class="section-corner-marker marker-br">+</div>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+          <h4>Multi-metric</h4>
+          <p>Track accuracy, precision, recall & AUC jointly — never accuracy alone — for an honest clinical picture.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transfer Learning Flow -->
+    <div class="flow-bar glass" data-animate>
+      <div class="section-corner-marker marker-tl">+</div>
+      <div class="section-corner-marker marker-br">+</div>
+      <div class="flow-label font-mono">TRANSFER LEARNING FLOW</div>
+      <div class="pill-flow">
+        <span class="pill">ImageNet</span>
+        <span class="pill-arrow">→</span>
+        <span class="pill">VGG19 conv</span>
+        <span class="pill-arrow">→</span>
+        <span class="pill">Flatten</span>
+        <span class="pill-arrow">→</span>
+        <span class="pill">Dense×2</span>
+        <span class="pill-arrow">→</span>
+        <span class="pill">Softmax(4)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  section {
+    position: relative;
+    padding: 96px 0 120px;
+  }
+
+  .section-header {
+    max-width: 720px;
+    margin-bottom: 48px;
+  }
+
+  .problem-grid {
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 1024px) {
+    .problem-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .bottleneck-card {
+    padding: 28px;
+    border-color: rgba(255, 83, 112, 0.2);
+    height: 100%;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .card-icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+
+  .card-icon.danger {
+    background: rgba(255, 83, 112, 0.12);
+    color: var(--red);
+  }
+
+  .card-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .card-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .pain-points {
+    list-style: none;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .pain-points li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .pain-points .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+    flex-shrink: 0;
+  }
+
+  .solutions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 768px) {
+    .solutions {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .solution-card {
+    padding: 24px;
+  }
+
+  .solution-card svg {
+    margin-bottom: 12px;
+  }
+
+  .solution-card h4 {
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .solution-card p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .flow-bar {
+    margin-top: 32px;
+    padding: 20px 24px;
+  }
+
+  .flow-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+</style>

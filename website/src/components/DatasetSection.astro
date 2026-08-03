@@ -1,0 +1,308 @@
+---
+---
+
+<section id="dataset" style="position: relative; overflow: hidden;">
+  <!-- Plus Corner Markers -->
+  <div class="section-corner-marker marker-tl">+</div>
+  <div class="section-corner-marker marker-tr">+</div>
+  <div class="section-corner-marker marker-bl">+</div>
+  <div class="section-corner-marker marker-br">+</div>
+
+  <!-- Background Watermark -->
+  <div class="bg-watermark">DATASET</div>
+
+  <!-- Background design elements -->
+  <div class="dotted-grid"></div>
+  <div class="radial-blob-cyan" style="top: -10%; right: -10%; opacity: 0.8;"></div>
+  <div class="radial-blob" style="bottom: -10%; left: -10%; opacity: 0.6;"></div>
+
+  <div class="container">
+    <div class="section-header" data-animate>
+      <div class="section-label">
+        <span class="number">02 · DATA</span>
+        <span class="line"></span>
+        <span class="tag">Dataset Overview</span>
+      </div>
+      <h2 class="section-title text-gradient-coral">7,023 T1-weighted MRI scans, four classes</h2>
+      <p class="section-desc">
+        The BT-MRI Dataset provides pre-split train / validation / test directories. 
+        ImageDataGenerator rescales pixels to [0,1]; no augmentation in this run.
+      </p>
+    </div>
+
+    <div class="dataset-grid">
+      <!-- Donut chart + breakdown -->
+      <div class="chart-card glass" data-animate>
+        <div class="section-corner-marker marker-tl">+</div>
+        <div class="section-corner-marker marker-br">+</div>
+
+        <div class="chart-inner">
+          <div class="donut-wrap">
+            <svg width="200" height="200" viewBox="0 0 200 200" class="donut-svg">
+              <!-- Training: 64.3% -->
+              <circle cx="100" cy="100" r="70" fill="none" stroke="var(--accent)" stroke-width="22"
+                stroke-dasharray="282.6 157.1" stroke-dashoffset="0" class="donut-segment"/>
+              <!-- Validation: 22.8% -->
+              <circle cx="100" cy="100" r="70" fill="none" stroke="#ffcb6b" stroke-width="22"
+                stroke-dasharray="100.3 339.5" stroke-dashoffset="-282.6" class="donut-segment"/>
+              <!-- Testing: 13% -->
+              <circle cx="100" cy="100" r="70" fill="none" stroke="#89ddff" stroke-width="22"
+                stroke-dasharray="57.1 382.7" stroke-dashoffset="-382.9" class="donut-segment"/>
+            </svg>
+            <div class="donut-center">
+              <div class="donut-value text-gradient-coral">7,023</div>
+              <div class="donut-label font-mono">TOTAL SCANS</div>
+            </div>
+          </div>
+
+          <div class="breakdown">
+            <div class="breakdown-item">
+              <div class="breakdown-header">
+                <span class="breakdown-dot" style="background:var(--accent)"></span>
+                <span>Training</span>
+                <span class="breakdown-meta font-mono">4,512 · 64.3%</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width:64.3%;background:var(--accent)"></div></div>
+            </div>
+            <div class="breakdown-item">
+              <div class="breakdown-header">
+                <span class="breakdown-dot" style="background:#ffcb6b"></span>
+                <span>Validation</span>
+                <span class="breakdown-meta font-mono">1,600 · 22.8%</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width:22.8%;background:#ffcb6b"></div></div>
+            </div>
+            <div class="breakdown-item">
+              <div class="breakdown-header">
+                <span class="breakdown-dot" style="background:#89ddff"></span>
+                <span>Testing</span>
+                <span class="breakdown-meta font-mono">911 · 13%</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width:13%;background:#89ddff"></div></div>
+            </div>
+
+            <div class="breakdown-footer">
+              <div class="footer-stat">
+                <div class="footer-val" style="color:var(--accent)">4</div>
+                <div class="footer-label">Classes</div>
+              </div>
+              <div class="footer-stat">
+                <div class="footer-val" style="color:var(--accent)">224²</div>
+                <div class="footer-label">Img size</div>
+              </div>
+              <div class="footer-stat">
+                <div class="footer-val" style="color:var(--accent)">100</div>
+                <div class="footer-label">Batch</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info cards -->
+      <div class="info-col" data-animate>
+        <div class="info-card glass">
+          <div class="section-corner-marker marker-tr">+</div>
+          <div class="info-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
+            <h3>BT-MRI Dataset</h3>
+          </div>
+          <p>A curated collection of 7,023 T1-weighted contrast MRI slices across four diagnostic 
+            categories. Splits are as provided by the dataset author — no re-shuffling was performed 
+            to keep results comparable.</p>
+        </div>
+
+        <div class="count-grid">
+          <div class="count-card glass">
+            <div class="count-val" style="color:var(--accent)">4,512</div>
+            <div class="count-label">Training images</div>
+          </div>
+          <div class="count-card glass">
+            <div class="count-val" style="color:var(--amber)">1,600</div>
+            <div class="count-label">Validation images</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  section {
+    position: relative;
+    padding: 96px 0 120px;
+  }
+
+  .grid-bg-abs {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(204, 255, 0, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(204, 255, 0, 0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.3;
+  }
+
+  .section-header {
+    position: relative;
+    max-width: 720px;
+    margin-bottom: 48px;
+  }
+
+  .dataset-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+
+  @media (max-width: 1024px) {
+    .dataset-grid { grid-template-columns: 1fr; }
+  }
+
+  .chart-card {
+    padding: 32px;
+  }
+
+  .chart-inner {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  @media (max-width: 640px) {
+    .chart-inner { flex-direction: column; }
+  }
+
+  .donut-wrap {
+    position: relative;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+
+  .donut-svg {
+    transform: rotate(-90deg);
+  }
+
+  .donut-center {
+    position: absolute;
+    text-align: center;
+  }
+
+  .donut-value {
+    font-family: var(--font-display-geom);
+    font-size: 1.75rem;
+    font-weight: 800;
+  }
+
+  .donut-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    margin-top: 4px;
+  }
+
+  .breakdown {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .breakdown-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .breakdown-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
+
+  .breakdown-meta {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .breakdown-footer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    text-align: center;
+    padding-top: 16px;
+    margin-top: 8px;
+    border-top: 1px solid rgba(204, 255, 0, 0.10);
+  }
+
+  .footer-val {
+    font-family: var(--font-display-geom);
+    font-size: 1.1rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .footer-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .info-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .info-card {
+    padding: 24px;
+  }
+
+  .info-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .info-header h3 {
+    font-weight: 600;
+  }
+
+  .info-card p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .count-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .count-card {
+    padding: 20px;
+  }
+
+  .count-val {
+    font-family: var(--font-display-geom);
+    font-size: 1.5rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .count-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+</style>

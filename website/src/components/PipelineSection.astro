@@ -1,0 +1,614 @@
+---
+const stages = [
+  { num: '01', badge: 'DATA', badgeColor: '#ffcb6b', title: 'MRI Scan', desc: 'T1-weighted, 224×224 RGB', detail: 'Raw T1-weighted contrast MRI scan is loaded at 224×224 resolution with 3 color channels. The dataset provides pre-cropped axial slices centered on the region of interest.', tags: ['224×224', 'RGB', 'T1-weighted'] },
+  { num: '02', badge: 'DATA', badgeColor: '#ffcb6b', title: 'Preprocess', desc: 'rescale 1/255, batch=100', detail: 'ImageDataGenerator rescales pixel values from [0,255] to [0,1]. Images are batched in groups of 100 for efficient GPU utilization. No augmentation is applied in this baseline.', tags: ['rescale 1/255', 'batch=100', 'no augmentation'] },
+  { num: '03', badge: 'FROZEN', badgeColor: '#89ddff', title: 'VGG19 Backbone', desc: 'frozen ImageNet weights', detail: 'The full VGG19 convolutional backbone (5 blocks, 16 conv layers) is loaded without its original classification head. All 20M parameters are frozen — no gradient updates during training.', tags: ['20M params', '16 conv layers', '5 blocks'] },
+  { num: '04', badge: 'TRAINABLE', badgeColor: 'var(--accent)', title: 'Flatten + Dense', desc: '4096 → 4096 → ReLU', detail: 'The 7×7×512 feature map from VGG19 is flattened to a 25,088-dimensional vector, then passed through two fully-connected layers of 4096 units each with ReLU activation.', tags: ['25,088 → 4,096', 'ReLU activation', '~33.6M params'] },
+  { num: '05', badge: 'TRAINABLE', badgeColor: 'var(--accent)', title: 'Softmax 4-Class', desc: 'probabilities per class', detail: 'A final dense layer with 4 output units and softmax activation produces a probability distribution over the four tumor classes. The highest probability determines the predicted class.', tags: ['4 outputs', 'softmax', 'categorical'] },
+  { num: '06', badge: 'DATA', badgeColor: '#ffcb6b', title: 'Diagnosis', desc: 'argmax → tumor type', detail: 'The argmax of the softmax output vector selects the most likely class: Glioma, Meningioma, No-tumor, or Pituitary. This prediction is compared against the ground truth label for evaluation.', tags: ['argmax', '4 classes', 'classification'] },
+];
+---
+
+<section id="pipeline" style="position: relative; overflow: hidden;">
+  <!-- Plus Corner Markers -->
+  <div class="section-corner-marker marker-tl">+</div>
+  <div class="section-corner-marker marker-tr">+</div>
+  <div class="section-corner-marker marker-bl">+</div>
+  <div class="section-corner-marker marker-br">+</div>
+
+  <!-- Background Watermark -->
+  <div class="bg-watermark-right">PIPELINE</div>
+
+  <!-- Background design elements -->
+  <div class="dotted-grid"></div>
+  <div class="radial-blob" style="top: 20%; left: -10%; opacity: 0.7;"></div>
+  <div class="radial-blob-cyan" style="bottom: 5%; right: -10%; opacity: 0.8;"></div>
+
+  <div class="container">
+    <div class="section-header" data-animate>
+      <div class="section-label">
+        <span class="number">03 · PIPELINE</span>
+        <span class="line"></span>
+        <span class="tag">End-to-end Pipeline</span>
+      </div>
+      <h2 class="section-title text-gradient-coral">From MRI scan to diagnosis — six stages</h2>
+      <p class="section-desc">
+        Each stage transforms the data closer to a diagnosis. Move your cursor across 
+        the 3D view — the boxes tilt and interact. Click any stage to select it.
+      </p>
+    </div>
+
+    <!-- 3D Pipeline Canvas with floating labels -->
+    <div class="canvas-container" data-animate style="height: 480px; position: relative; margin-bottom: 24px;">
+      <div class="section-corner-marker marker-tl">+</div>
+      <div class="section-corner-marker marker-br">+</div>
+      <div class="grid-bg-abs" style="opacity:0.1"></div>
+      <div id="pipeline-canvas" style="position: absolute; inset: 0; width: 100%; height: 100%;"></div>
+      
+      <!-- Interactive HTML Overlay Labels inside the canvas container, positioned to align with 3D elements -->
+      <div class="canvas-labels-overlay">
+        {stages.map((stage, i) => (
+          <div class="stage-label-group" id={`label-group-${i}`} data-stage={i}>
+            <div class="label-circle font-mono">{stage.num}</div>
+            <div class="label-title">{stage.title}</div>
+            <div class="label-badge font-mono" style={`color: ${stage.badgeColor === 'var(--accent)' ? 'var(--accent)' : stage.badgeColor}`}>{stage.badge}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="pipeline-legend" data-animate>
+      <div class="legend-item">
+        <span class="l-box" style="border-color:#ffcb6b; background:rgba(255,203,107,0.1)"></span>
+        DATA
+      </div>
+      <div class="legend-item">
+        <span class="l-box" style="border-color:#89ddff; background:rgba(137,221,255,0.1)"></span>
+        FROZEN
+      </div>
+      <div class="legend-item">
+        <span class="l-box" style="border-color:var(--accent); background:rgba(204,255,0,0.1)"></span>
+        TRAINABLE
+      </div>
+    </div>
+
+    <!-- Interactive stage cards -->
+    <div class="stages-grid" data-animate>
+      {stages.map((stage, i) => (
+        <div class="pipeline-card glass" data-stage={i} id={`stage-card-${i}`}>
+          <div class="section-corner-marker marker-tr">+</div>
+          <div class="card-top">
+            <span class="step-num font-mono">{stage.num}</span>
+            <span class="badge" style={`background: ${stage.badgeColor === 'var(--accent)' ? 'var(--accent-dim)' : stage.badgeColor + '18'}; color: ${stage.badgeColor}; border-color: ${stage.badgeColor === 'var(--accent)' ? 'var(--accent-border)' : 'transparent'}`}>{stage.badge}</span>
+          </div>
+          <div class="step-title">{stage.title}</div>
+          <p class="step-desc">{stage.desc}</p>
+        </div>
+      ))}
+    </div>
+
+    <!-- Detail Panel -->
+    <div class="pipeline-detail glass" id="pipeline-detail" data-animate>
+      <div class="section-corner-marker marker-tl">+</div>
+      <div class="section-corner-marker marker-br">+</div>
+      <div class="detail-num font-mono" id="detail-num">01</div>
+      <div class="detail-title" id="detail-title">MRI Scan</div>
+      <p class="detail-desc" id="detail-desc">Raw T1-weighted contrast MRI scan is loaded at 224×224 resolution with 3 color channels. The dataset provides pre-cropped axial slices centered on the region of interest.</p>
+      <div class="detail-tags" id="detail-tags">
+        <span class="detail-tag">224×224</span>
+        <span class="detail-tag">RGB</span>
+        <span class="detail-tag">T1-weighted</span>
+      </div>
+      <div class="detail-nav">
+        <button class="nav-btn" id="detail-prev" aria-label="Previous stage">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <span class="nav-counter font-mono" id="detail-counter">1 / 6</span>
+        <button class="nav-btn" id="detail-next" aria-label="Next stage">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  section {
+    position: relative;
+    padding: 96px 0 120px;
+  }
+
+  .grid-bg-abs {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(204, 255, 0, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(204, 255, 0, 0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  .section-header {
+    max-width: 720px;
+    margin-bottom: 48px;
+  }
+
+  .canvas-labels-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    padding-top: 40px;
+    z-index: 10;
+  }
+
+  .stage-label-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    pointer-events: auto;
+  }
+
+  .label-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: rgba(18, 18, 20, 0.9);
+    display: grid;
+    place-items: center;
+    font-size: 10px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    transition: all var(--transition-base);
+  }
+
+  .label-circle:hover,
+  .stage-label-group.active .label-circle {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .label-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .label-badge {
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .stages-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 1024px) {
+    .stages-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .canvas-labels-overlay {
+      display: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .stages-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .pipeline-card {
+    padding: 16px;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+  }
+
+  .pipeline-card:hover,
+  .pipeline-card.active {
+    border-color: rgba(204, 255, 0, 0.4);
+    background: rgba(204, 255, 0, 0.02);
+    transform: translateY(-2px);
+  }
+
+  .pipeline-card.active {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .step-num {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .badge {
+    font-size: 8px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  .step-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .step-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  .pipeline-legend {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .l-box {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    border: 1px solid;
+  }
+
+  .pipeline-detail {
+    margin-top: 32px;
+    padding: 32px;
+    position: relative;
+  }
+
+  .detail-num {
+    font-size: 32px;
+    color: var(--accent);
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+
+  .detail-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  .detail-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 800px;
+    margin-bottom: 20px;
+  }
+
+  .detail-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .detail-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    color: var(--text-secondary);
+  }
+
+  .detail-nav {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 20px;
+  }
+
+  .nav-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: rgba(18, 18, 20, 0.5);
+    display: grid;
+    place-items: center;
+    color: var(--text-secondary);
+    transition: all var(--transition-fast);
+  }
+
+  .nav-btn:hover {
+    color: var(--text);
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .nav-counter {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+</style>
+
+<script>
+  import * as THREE from 'three';
+
+  const stagesData = [
+    { num: '01', title: 'MRI Scan', desc: 'Raw T1-weighted contrast MRI scan is loaded at 224×224 resolution with 3 color channels. The dataset provides pre-cropped axial slices centered on the region of interest.', tags: ['224×224', 'RGB', 'T1-weighted'] },
+    { num: '02', title: 'Preprocess', desc: 'ImageDataGenerator rescales pixel values from [0,255] to [0,1]. Images are batched in groups of 100 for efficient GPU utilization. No augmentation is applied in this baseline.', tags: ['rescale 1/255', 'batch=100', 'no augmentation'] },
+    { num: '03', title: 'VGG19 Backbone', desc: 'The full VGG19 convolutional backbone (5 blocks, 16 conv layers) is loaded without its original classification head. All 20M parameters are frozen — no gradient updates during training.', tags: ['20M params', '16 conv layers', '5 blocks'] },
+    { num: '04', title: 'Flatten + Dense', desc: 'The 7×7×512 feature map from VGG19 is flattened to a 25,088-dimensional vector, then passed through two fully-connected layers of 4096 units each with ReLU activation.', tags: ['25,088 → 4,096', 'ReLU activation', '~33.6M params'] },
+    { num: '05', title: 'Softmax 4-Class', desc: 'A final dense layer with 4 output units and softmax activation produces a probability distribution over the four tumor classes. The highest probability determines the predicted class.', tags: ['4 outputs', 'softmax', 'categorical'] },
+    { num: '06', title: 'Diagnosis', desc: 'The argmax of the softmax output vector selects the most likely class: Glioma, Meningioma, No-tumor, or Pituitary. This prediction is compared against the ground truth label for evaluation.', tags: ['argmax', '4 classes', 'classification'] },
+  ];
+
+  let currentStage = 0;
+
+  function updateDetail(index: number) {
+    currentStage = index;
+    const stage = stagesData[index];
+
+    const numEl = document.getElementById('detail-num');
+    const titleEl = document.getElementById('detail-title');
+    const descEl = document.getElementById('detail-desc');
+    const tagsEl = document.getElementById('detail-tags');
+    const counterEl = document.getElementById('detail-counter');
+
+    if (numEl) numEl.textContent = stage.num;
+    if (titleEl) titleEl.textContent = stage.title;
+    if (descEl) descEl.textContent = stage.desc;
+    if (counterEl) counterEl.textContent = `${index + 1} / 6`;
+    if (tagsEl) {
+      tagsEl.innerHTML = stage.tags.map(t => `<span class="detail-tag">${t}</span>`).join('');
+    }
+
+    document.querySelectorAll('.pipeline-card').forEach((card, i) => {
+      card.classList.toggle('active', i === index);
+    });
+
+    document.querySelectorAll('.stage-label-group').forEach((lbl, i) => {
+      lbl.classList.toggle('active', i === index);
+    });
+  }
+
+  document.querySelectorAll('.pipeline-card').forEach((card, i) => {
+    card.addEventListener('click', () => updateDetail(i));
+  });
+
+  document.querySelectorAll('.stage-label-group').forEach((lbl, i) => {
+    lbl.addEventListener('click', () => updateDetail(i));
+  });
+
+  document.getElementById('detail-prev')?.addEventListener('click', () => {
+    updateDetail((currentStage - 1 + 6) % 6);
+  });
+  document.getElementById('detail-next')?.addEventListener('click', () => {
+    updateDetail((currentStage + 1) % 6);
+  });
+
+  updateDetail(0);
+
+  function createBoldDirectionArrow(vStart: THREE.Vector3, vEnd: THREE.Vector3, color: number) {
+    const arrowGroup = new THREE.Group();
+
+    const distance = vStart.distanceTo(vEnd);
+    const shaftLength = distance - 0.7; 
+    const shaftGeom = new THREE.CylinderGeometry(0.045, 0.045, shaftLength, 6);
+    const mat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.65 });
+    const shaft = new THREE.Mesh(shaftGeom, mat);
+
+    const direction = new THREE.Vector3().subVectors(vEnd, vStart).normalize();
+    const alignAxis = new THREE.Vector3(0, 1, 0);
+    
+    const midpoint = new THREE.Vector3().addVectors(vStart, vEnd).multiplyScalar(0.5);
+    const offset = direction.clone().multiplyScalar(0.18);
+    const shaftPos = midpoint.clone().sub(offset);
+    shaft.position.copy(shaftPos);
+    shaft.quaternion.setFromUnitVectors(alignAxis, direction);
+    arrowGroup.add(shaft);
+
+    const coneGeom = new THREE.ConeGeometry(0.13, 0.32, 12);
+    const cone = new THREE.Mesh(coneGeom, mat);
+    const conePos = vEnd.clone().sub(direction.clone().multiplyScalar(0.42));
+    cone.position.copy(conePos);
+    cone.quaternion.setFromUnitVectors(alignAxis, direction);
+    arrowGroup.add(cone);
+
+    return arrowGroup;
+  }
+
+  function initPipelineFlowchart() {
+    const container = document.getElementById('pipeline-canvas');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    const scene = new THREE.Scene();
+    const w = container.clientWidth || 800;
+    const h = container.clientHeight || 480;
+    const camera = new THREE.PerspectiveCamera(42, w / h, 0.1, 1000);
+    camera.position.set(0, 0, 12);
+    camera.lookAt(0, 0, 0);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(w, h);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    const group = new THREE.Group();
+
+    const boxColors = [0xffcb6b, 0xffcb6b, 0x89ddff, 0xff5370, 0xff5370, 0xffcb6b];
+    const boxPositions = [-5.2, -3.1, -1.0, 1.1, 3.2, 5.3];
+
+    const slabWidth = 0.65;
+    const slabHeight = 3.6;
+    const slabDepth = 1.6;
+
+    const boxes: THREE.Group[] = [];
+    const raycastTargets: THREE.Mesh[] = [];
+
+    boxPositions.forEach((xPos, i) => {
+      const slabGroup = new THREE.Group();
+      slabGroup.position.x = xPos;
+
+      const geometry = new THREE.BoxGeometry(slabWidth, slabHeight, slabDepth);
+      
+      const edges = new THREE.EdgesGeometry(geometry);
+      const lineMat = new THREE.LineBasicMaterial({ color: boxColors[i], transparent: true, opacity: 0.65 });
+      const wireframe = new THREE.LineSegments(edges, lineMat);
+      slabGroup.add(wireframe);
+
+      const faceMat = new THREE.MeshBasicMaterial({ color: boxColors[i], transparent: true, opacity: 0.08, side: THREE.DoubleSide });
+      const solid = new THREE.Mesh(geometry, faceMat);
+      solid.userData = { index: i };
+      slabGroup.add(solid);
+      raycastTargets.push(solid);
+
+      slabGroup.rotation.y = -0.32;
+      slabGroup.rotation.x = 0.08;
+
+      group.add(slabGroup);
+      boxes.push(slabGroup);
+    });
+
+    for (let i = 0; i < boxPositions.length - 1; i++) {
+      const from = new THREE.Vector3(boxPositions[i], 0, 0);
+      const to = new THREE.Vector3(boxPositions[i + 1], 0, 0);
+      
+      from.applyAxisAngle(new THREE.Vector3(0, 1, 0), -0.32);
+      from.applyAxisAngle(new THREE.Vector3(1, 0, 0), 0.08);
+      
+      to.applyAxisAngle(new THREE.Vector3(0, 1, 0), -0.32);
+      to.applyAxisAngle(new THREE.Vector3(1, 0, 0), 0.08);
+
+      const arrow = createBoldDirectionArrow(from, to, 0xccff00);
+      group.add(arrow);
+    }
+
+    const particleGroup = new THREE.Group();
+    const particleColors = [0xffcb6b, 0x89ddff, 0xff5370, 0xffffff];
+    const particles: { mesh: THREE.Mesh, speed: number, offset: number }[] = [];
+
+    for (let i = 0; i < boxPositions.length - 1; i++) {
+      const startX = boxPositions[i];
+      const endX = boxPositions[i + 1];
+      
+      for (let p = 0; p < 2; p++) {
+        const geom = new THREE.SphereGeometry(0.06, 8, 8);
+        const col = particleColors[Math.floor(Math.random() * particleColors.length)];
+        const mat = new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.8 });
+        const mesh = new THREE.Mesh(geom, mat);
+        
+        const x = startX + (endX - startX) * (0.33 + p * 0.33);
+        const y = (Math.random() - 0.5) * slabHeight * 0.4;
+        const z = (Math.random() - 0.5) * slabDepth * 0.4;
+        mesh.position.set(x, y, z);
+        
+        particleGroup.add(mesh);
+        particles.push({
+          mesh,
+          speed: 0.3 + Math.random() * 0.4,
+          offset: Math.random() * 100
+        });
+      }
+    }
+    group.add(particleGroup);
+
+    scene.add(group);
+
+    let mouseX = 0, mouseY = 0;
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    container.addEventListener('mousemove', (e) => {
+      const rect = container.getBoundingClientRect();
+      mouseX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+      mouseY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+    });
+
+    container.addEventListener('click', (e) => {
+      const rect = container.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+      mouse.y = -((e.clientY - rect.top) / rect.height - 0.5) * 2;
+
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(raycastTargets);
+
+      if (intersects.length > 0) {
+        const clickedIndex = intersects[0].object.userData.index;
+        updateDetail(clickedIndex);
+      }
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const time = Date.now() * 0.001;
+
+      boxes.forEach((box, i) => {
+        box.position.y = Math.sin(time * 0.8 + i * 0.5) * 0.08;
+      });
+
+      particles.forEach(p => {
+        p.mesh.position.y += Math.sin(time * p.speed + p.offset) * 0.003;
+      });
+
+      group.rotation.y += (mouseX * 0.16 - group.rotation.y) * 0.03;
+      group.rotation.x += (-mouseY * 0.08 - group.rotation.x) * 0.03;
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+      const newW = container.clientWidth;
+      const newH = container.clientHeight;
+      camera.aspect = newW / newH;
+      camera.updateProjectionMatrix();
+      renderer.setSize(newW, newH);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPipelineFlowchart);
+  } else {
+    setTimeout(initPipelineFlowchart, 200);
+  }
+</script>

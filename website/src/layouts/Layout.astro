@@ -1,0 +1,59 @@
+---
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Brain Tumor Classification · VGG19 Transfer Learning',
+  description = 'Fine-tuning VGG19 on 7,023 MRI scans for 4-class brain tumor diagnosis — reaching 94.73% validation accuracy and 99.26% AUC.'
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="author" content="Souraj Kundu" />
+  <meta name="keywords" content="Brain Tumor,VGG19,Transfer Learning,MRI,Deep Learning,CNN,Medical AI,TensorFlow" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  
+  <!-- Preconnect to fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+  <!-- Homoludens Typography: Syncopate (wide headings), Syne (geometric headings), Playball (cursive script overlay) -->
+  <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Syne:wght@700;800&family=Playball&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <slot />
+
+  <script>
+    // Intersection Observer for scroll-triggered animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          const children = entry.target.querySelectorAll('[data-stagger]');
+          children.forEach((child, i) => {
+            setTimeout(() => {
+              (child as HTMLElement).style.opacity = '1';
+              (child as HTMLElement).style.transform = 'translateY(0)';
+            }, i * 100);
+          });
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50% 0px' });
+
+    document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

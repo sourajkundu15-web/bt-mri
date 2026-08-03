@@ -1,0 +1,103 @@
+---
+---
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <div class="footer-logo">
+          <span class="logo-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/>
+              <path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/>
+            </svg>
+          </span>
+          <span>VGG19<span style="color:var(--coral)">·</span>MRI</span>
+        </div>
+        <p class="footer-desc">
+          Brain Tumor Classification using VGG19 Transfer Learning. 
+          A deep learning case study on 7,023 T1-weighted MRI scans.
+        </p>
+      </div>
+
+      <div class="footer-right">
+        <div class="footer-meta font-mono">
+          <span>TensorFlow/Keras</span>
+          <span>·</span>
+          <span>VGG19</span>
+          <span>·</span>
+          <span>BT-MRI Dataset</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span class="font-mono">Built with Astro · Souraj Kundu</span>
+      <span class="font-mono">© 2026</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 48px 0 32px;
+  }
+
+  .footer-inner {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 32px;
+    margin-bottom: 32px;
+  }
+
+  @media (max-width: 768px) {
+    .footer-inner { flex-direction: column; }
+  }
+
+  .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .logo-icon {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: var(--coral-dim);
+    border: 1px solid rgba(255, 107, 107, 0.2);
+    color: var(--coral);
+  }
+
+  .footer-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 360px;
+  }
+
+  .footer-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+</style>

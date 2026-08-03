@@ -1,0 +1,222 @@
+---
+const testResults = [
+  { label: 'Test Loss', value: '0.1455', color: 'var(--coral)' },
+  { label: 'Test Accuracy', value: '95.17%', color: 'var(--amber)' },
+  { label: 'Test Precision', value: '95.37%', color: 'var(--cyan)' },
+  { label: 'Test Recall', value: '95.07%', color: 'var(--purple)' },
+  { label: 'Test AUC', value: '99.49%', color: 'var(--coral)' },
+];
+
+const pros = [
+  'No-tumor class reaches 98.8% precision',
+  'Strong generalization with 95.17% test accuracy',
+  'AUC of 99.49% suggests reliable ranking',
+  'Simple architecture — easy to reproduce',
+  'Transfer learning dramatically reduces data needs',
+];
+
+const cons = [
+  'Glioma ↔ Pituitary confusion — 29 misclassified',
+  'Meningioma ↔ Pituitary overlap — 27 misclassified',
+  'VGG19 is parameter-heavy (139.6M total)',
+  'No data augmentation baseline may underfit edge cases',
+  'Frozen backbone limits feature specialization',
+];
+---
+
+<section id="results">
+  <div class="container">
+    <div class="section-header" data-animate>
+      <div class="section-label">
+        <span class="number">07 · RESULTS</span>
+        <span class="line"></span>
+        <span class="tag">Conclusion</span>
+      </div>
+      <h2 class="section-title text-gradient-coral">Final test-set metrics & analysis</h2>
+      <p class="section-desc">
+        After 100 epochs of training only the dense classification head, 
+        the model achieves strong performance across all five tracked metrics on the held-out test set.
+      </p>
+    </div>
+
+    <!-- Test metric cards -->
+    <div class="results-grid" data-animate>
+      {testResults.map(metric => (
+        <div class="result-card glass">
+          <div class="result-value" style={`color:${metric.color}`}>{metric.value}</div>
+          <div class="result-label">{metric.label}</div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Pros & Cons -->
+    <div class="analysis-grid" data-animate>
+      <div class="analysis-card glass">
+        <div class="analysis-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+          <h3>Where it works</h3>
+        </div>
+        <ul class="analysis-list">
+          {pros.map(item => (
+            <li>
+              <span class="check-dot" style="background:var(--cyan)"></span>
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="analysis-card glass">
+        <div class="analysis-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+          <h3>Where it falls short</h3>
+        </div>
+        <ul class="analysis-list">
+          {cons.map(item => (
+            <li>
+              <span class="check-dot" style="background:var(--red)"></span>
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Key takeaway -->
+    <div class="takeaway glass" data-animate>
+      <div class="takeaway-label font-mono">KEY TAKEAWAY</div>
+      <p>
+        VGG19 with transfer learning proves that <strong>frozen ImageNet features generalize well</strong> to 
+        medical imaging — even without data augmentation. For production, consider unfreezing late conv blocks 
+        for fine-tuning, adding dropout to the dense head, and applying augmentation (rotation, flip, brightness) 
+        to improve robustness on underrepresented classes.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  section {
+    position: relative;
+    padding: 96px 0 120px;
+  }
+
+  .section-header {
+    max-width: 720px;
+    margin-bottom: 48px;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  @media (max-width: 1024px) {
+    .results-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 640px) {
+    .results-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .result-card {
+    padding: 24px;
+    text-align: center;
+    transition: transform var(--transition-base);
+  }
+
+  .result-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .result-value {
+    font-size: 2rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+
+  .result-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  @media (max-width: 768px) {
+    .analysis-grid { grid-template-columns: 1fr; }
+  }
+
+  .analysis-card {
+    padding: 28px;
+  }
+
+  .analysis-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .analysis-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .analysis-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .analysis-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .check-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+
+  .takeaway {
+    padding: 32px;
+  }
+
+  .takeaway-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--coral);
+    margin-bottom: 12px;
+  }
+
+  .takeaway p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    max-width: 720px;
+  }
+
+  .takeaway strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+</style>

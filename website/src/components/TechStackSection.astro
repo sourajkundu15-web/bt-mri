@@ -1,0 +1,135 @@
+---
+const techStack = [
+  {
+    name: 'AstroJS',
+    type: 'Frontend Framework',
+    desc: 'Used for building a high-performance, fast-loading static site architecture with islands of interactivity.',
+    color: 'var(--accent)',
+  },
+  {
+    name: 'Three.js',
+    type: '3D Graphics Library',
+    desc: 'Powers the interactive, mouse-responsive 3D neural net, pipeline flowchart, and block topology models.',
+    color: 'var(--accent)',
+  },
+  {
+    name: 'TensorFlow & Keras',
+    type: 'Deep Learning Core',
+    desc: 'Core framework used in the notebook for model training, compiling, fitting, and fine-tuning VGG19.',
+    color: 'var(--cyan)',
+  },
+  {
+    name: 'Python',
+    type: 'Programming Language',
+    desc: 'Language utilized for data cleaning, pipeline configuration, metrics calculations, and plotting.',
+    color: 'var(--amber)',
+  },
+  {
+    name: 'Jupyter & Pandas',
+    type: 'Analysis Environment',
+    desc: 'Environment where the clinical ML study was developed, history was pickled, and results were visualised.',
+    color: 'var(--purple)',
+  },
+  {
+    name: 'PIL & Pillow',
+    type: 'Image Manipulation',
+    desc: 'Python imaging library used to crop, normalize, and prepare dataset T1-weighted scans for showcase.',
+    color: 'var(--cyan)',
+  },
+];
+---
+
+<section id="techstack" class="tech-section">
+  <div class="container">
+    <div class="section-header" data-animate>
+      <div class="section-label">
+        <span class="number">08 · STACK</span>
+        <span class="line"></span>
+        <span class="tag">Technology Stack</span>
+      </div>
+      <h2 class="section-title text-gradient-coral">Engineered with modern tools</h2>
+      <p class="section-desc">
+        Rebuilding the clinical classification pipeline combining deep learning backbone engineering 
+        with highly optimized web visualization technologies.
+      </p>
+    </div>
+
+    <div class="tech-grid" data-animate>
+      {techStack.map(tech => (
+        <div class="tech-card glass">
+          <div class="tech-card-header">
+            <span class="tech-badge font-mono" style={`color: ${tech.color}; border-color: ${tech.color === 'var(--accent)' ? 'var(--accent-border)' : 'transparent'}; background: ${tech.color === 'var(--accent)' ? 'var(--accent-dim)' : 'rgba(255,255,255,0.03)'}`}>{tech.type}</span>
+          </div>
+          <h3 class="tech-name">{tech.name}</h3>
+          <p class="tech-desc-text">{tech.desc}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .tech-section {
+    position: relative;
+    padding: 96px 0 120px;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .section-header {
+    max-width: 720px;
+    margin-bottom: 48px;
+  }
+
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  @media (max-width: 1024px) {
+    .tech-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 640px) {
+    .tech-grid { grid-template-columns: 1fr; }
+  }
+
+  .tech-card {
+    padding: 24px;
+    transition: all var(--transition-base);
+  }
+
+  .tech-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-border);
+  }
+
+  .tech-card-header {
+    margin-bottom: 12px;
+  }
+
+  .tech-badge {
+    font-size: 9px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.1);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+
+  .tech-name {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+  }
+
+  .tech-desc-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+</style>

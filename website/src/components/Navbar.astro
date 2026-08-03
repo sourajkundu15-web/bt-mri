@@ -1,0 +1,335 @@
+---
+const mainLinks = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'dataset', label: 'Dataset' },
+  { id: 'architecture', label: 'Architecture' },
+];
+
+const dropdownLinks = [
+  { id: 'problem', label: 'Problem' },
+  { id: 'classes', label: 'Classes' },
+  { id: 'pipeline', label: 'Pipeline' },
+  { id: 'training', label: 'Training' },
+  { id: 'epochs', label: 'History' },
+  { id: 'evaluation', label: 'Evaluation' },
+  { id: 'techstack', label: 'Stack' },
+  { id: 'results', label: 'Results' },
+];
+
+const allLinks = [...mainLinks, ...dropdownLinks];
+---
+
+<header id="site-nav">
+  <nav class="container nav-inner">
+    <button class="logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+      <span class="logo-icon">
+        <img src="/logo-icon.png" alt="Logo icon" class="logo-icon-img" />
+      </span>
+      <span class="logo-text">VGG19<span class="logo-dot">·</span>MRI</span>
+    </button>
+
+    <div class="nav-links hide-mobile">
+      {mainLinks.map(link => (
+        <a href={`#${link.id}`} class="nav-link" data-section={link.id}>{link.label}</a>
+      ))}
+      
+      <!-- More Dropdown -->
+      <div class="nav-dropdown" id="more-dropdown">
+        <button class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+          More 
+          <svg class="dropdown-arrow" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="dropdown-menu glass-strong">
+          {dropdownLinks.map(link => (
+            <a href={`#${link.id}`} class="dropdown-item" data-section={link.id}>{link.label}</a>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 12h16"/><path d="M4 18h16"/><path d="M4 6h16"/>
+      </svg>
+    </button>
+  </nav>
+</header>
+
+<div class="mobile-menu" id="mobile-menu">
+  {allLinks.map(link => (
+    <a href={`#${link.id}`} class="mobile-link">{link.label}</a>
+  ))}
+</div>
+
+<style>
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    transition: all 0.3s ease;
+    background: rgba(10, 10, 11, 0.45);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  }
+
+  header.scrolled {
+    background: rgba(10, 10, 11, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .nav-inner {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+  }
+
+  .logo-icon-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .logo-text {
+    font-family: var(--font-display-wide);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .logo-dot {
+    color: var(--accent);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 6px;
+    color: var(--text-muted);
+    transition: all var(--transition-fast);
+    cursor: pointer;
+    background: transparent;
+    border: 1px solid transparent;
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    color: var(--text);
+  }
+
+  .nav-link.active {
+    background: var(--accent-dim);
+    color: var(--accent);
+    border: 1px solid var(--accent-border);
+  }
+
+  /* Dropdown Styles */
+  .nav-dropdown {
+    position: relative;
+  }
+
+  .dropdown-toggle .dropdown-arrow {
+    transition: transform var(--transition-fast);
+  }
+
+  .nav-dropdown:hover .dropdown-toggle .dropdown-arrow {
+    transform: rotate(180deg);
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 160px;
+    padding: 8px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    opacity: 0;
+    transform: translateY(6px);
+    pointer-events: none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .nav-dropdown:hover .dropdown-menu {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .dropdown-item {
+    padding: 8px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    border-radius: 5px;
+    transition: all var(--transition-fast);
+  }
+
+  .dropdown-item:hover,
+  .dropdown-item.active {
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .mobile-toggle {
+    display: none;
+    padding: 8px;
+    color: var(--text-muted);
+    border-radius: 6px;
+  }
+
+  .mobile-toggle:hover {
+    color: var(--text);
+  }
+
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    z-index: 99;
+    background: rgba(10, 10, 11, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    flex-direction: column;
+    gap: 4px;
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
+  }
+
+  .mobile-menu.open {
+    display: flex;
+  }
+
+  .mobile-link {
+    display: block;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    border-radius: 8px;
+    transition: all var(--transition-fast);
+  }
+
+  .mobile-link:hover {
+    color: var(--text);
+    background: var(--accent-dim);
+  }
+
+  @media (max-width: 1024px) {
+    .hide-mobile { display: none !important; }
+    .mobile-toggle { display: block; }
+  }
+</style>
+
+<script>
+  // Scroll-aware navbar background
+  const nav = document.getElementById('site-nav');
+  const mobileToggle = document.getElementById('mobile-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  window.addEventListener('scroll', () => {
+    if (nav) {
+      if (window.scrollY > 50) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    }
+  });
+
+  mobileToggle?.addEventListener('click', () => {
+    mobileMenu?.classList.toggle('open');
+  });
+
+  document.querySelectorAll('.mobile-link').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu?.classList.remove('open');
+    });
+  });
+
+  // Active section highlighting based on window scroll position
+  const sections = document.querySelectorAll('section[id]');
+  const mainNavLinks = document.querySelectorAll('.nav-link[data-section]');
+  const dropdownItems = document.querySelectorAll('.dropdown-item');
+  const moreToggle = document.querySelector('.dropdown-toggle');
+
+  const dropdownSectionIds = ['problem', 'classes', 'pipeline', 'training', 'epochs', 'evaluation', 'techstack', 'results'];
+
+  function highlightActiveSection() {
+    let current = '';
+    const scrollY = window.scrollY || document.documentElement.scrollTop;
+    
+    sections.forEach(section => {
+      const sectionTop = (section as HTMLElement).offsetTop - 180;
+      const sectionHeight = (section as HTMLElement).offsetHeight;
+      if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+        current = section.getAttribute('id') || '';
+      }
+    });
+
+    if (current) {
+      // Highlight main links
+      mainNavLinks.forEach(link => {
+        const isCurrent = link.getAttribute('data-section') === current;
+        link.classList.toggle('active', isCurrent);
+      });
+
+      // Highlight dropdown items
+      dropdownItems.forEach(item => {
+        const isCurrent = item.getAttribute('data-section') === current;
+        item.classList.toggle('active', isCurrent);
+      });
+
+      // If an active section is within the dropdown, highlight the "More" toggle button
+      if (moreToggle) {
+        const isDropdownSectionActive = dropdownSectionIds.includes(current);
+        moreToggle.classList.toggle('active', isDropdownSectionActive);
+      }
+    }
+  }
+
+  window.addEventListener('scroll', highlightActiveSection);
+  window.addEventListener('resize', highlightActiveSection);
+  highlightActiveSection(); // Run on initial load
+</script>
