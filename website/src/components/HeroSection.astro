@@ -293,10 +293,10 @@
     }
 
     // ==========================================
-    // 2. ROTATING 3D BRAIN MESH (SHIFTED FURTHER RIGHT)
+    // 2. ROTATING 3D BRAIN MESH
     // ==========================================
     const brainGroup = new THREE.Group();
-    brainGroup.position.set(5.1, 0, 0.5); 
+    brainGroup.position.set(3.5, 0, 0.5); 
     brainGroup.scale.set(0.95, 0.95, 0.95);
     mainGroup.add(brainGroup);
 
@@ -478,7 +478,7 @@
 
     function updateBrainPosition() {
       const aspect = container.clientWidth / container.clientHeight;
-      const brainX = Math.min(5.3, aspect * 3.4); 
+      const brainX = Math.min(3.6, aspect * 2.3); 
       brainGroup.position.x = brainX;
     }
     window.addEventListener('resize', updateBrainPosition);
